@@ -4,12 +4,13 @@
   "description": "\"Node.js - Task1\"",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "node server.ts"
   },
   "author": "Tatjana Markovic",
   "license": "ISC",
   "devDependencies": {
-    "typescript": "^4.5.4"
+    "typescript": "^4.5.4",
+    "ts-node": "^10.4.0"
   },
   "dependencies": {
     "express": "^4.17.2"
