@@ -2,7 +2,7 @@
   "name": "uteam-api",
   "version": "1.0.0",
   "description": "\"Node.js - Task1\"",
-  "main": "server.ts",
+  "main": "server.js",
   "scripts": {
     "start": "node dist/server.js",
     "dev": "nodemon src/server.ts",
