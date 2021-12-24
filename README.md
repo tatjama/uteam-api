@@ -18,15 +18,19 @@
     tsc
 4. find it on
     http://localhost:5000
+5. start ESlint with
+    npm run lint
 
 ## Overview
     Uteam is an api server that listens on port 5000 and returns JSON for all requests with confirmation that everything is O.K. It was tested with the help of a Postman.
 
 ## Build with 
     1. Node.js
-    2. Express
+    2. Express, body-parser, cors
     3. TypeScript
-    
+    4. ESlint
+    5. MySQL2
+    6. Sequelize
 ## Author
 - Website - [Tatjana Markovic](https://my-react-portfolio-tatjana.vercel.app/)
 - LinkedIn - [Tatjana Marković](https://www.linkedin.com/in/tatjana-markovi%C4%87-919501189/)

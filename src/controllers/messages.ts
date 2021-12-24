@@ -1,8 +1,8 @@
-import { Request, Response, NextFunction } from 'express';
+import { Request, Response} from 'express';
 import { message } from '../utility/data';
 
-const getMessage = (req: Request, res: Response, next: NextFunction) => {
-    let result = message;
+const getMessage = (req: Request, res: Response) => {
+    const result = message;
     return res.status(200).json(result.message);
 }
 
