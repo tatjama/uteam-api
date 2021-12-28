@@ -6,11 +6,25 @@ dotenv.config();
 const DB = process.env.MYSQL_DB || '';
 const USERNAME = process.env.MYSQL_USERNAME || '';
 const PASSWORD = process.env.MYSQL_PASSWORD || '';
+const PORT = Number(process.env.MYSQL_PORT) || 3306;
 
 export const sequelize = new Sequelize(DB, USERNAME, PASSWORD, {
     dialect: 'mysql',
-    port: 3306
+    port: PORT ,
 });
 
-//sequelize.authenticate();
+const mySequalize =  async () => {
+    try {
+        await sequelize.authenticate();
+        console.log('Connection has been established successfully.');
+      } catch (error) {
+        console.error('Unable to connect to the database:', error);
+      }
+}
+
+mySequalize();
+
+
+
+
 

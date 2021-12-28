@@ -7,34 +7,25 @@ export interface UserModel extends Model {
     password: string;
 }
 
-
-export const User = sequelize.define<UserModel>('user', {
+export const User = sequelize.define<UserModel>('User', {
     id: {
         type: DataTypes.INTEGER.UNSIGNED,
         autoIncrement: true,
-        primaryKey: true
+        primaryKey: true,
+        allowNull: false
     },
-    username: {type : new DataTypes.STRING(128)},
-    email: {type: new DataTypes.STRING(128)},
-    password : {type: new DataTypes.STRING(128)}
+    username: {
+        type : new DataTypes.STRING(128),
+        allowNull: false
+    },
+    email: {
+        type: new DataTypes.STRING(128),
+        allowNull: false
+    },
+    password : {
+        type: new DataTypes.STRING(128),
+        allowNull: false
+    }
 }
 )
 
-/*class UserModel extends Model { 
-    public id!: number;
-    public username!: string;
-    public email!: string;
-    
-    public password!: string
-}
-
-UserModel.init( {
-    id: {
-        type: DataTypes.INTEGER.UNSIGNED,
-        autoIncrement: true,
-        primaryKey: true
-    },
-    username: {type : new DataTypes.STRING(128)},
-    emailL: {type: new DataTypes.STRING(128)},
-    password : {type: new DataTypes.STRING(128)}
-}, {tableName: 'users', sequelize}); */
