@@ -31,6 +31,7 @@
     4. ESlint
     5. MySQL2
     6. Sequelize
+    7. Dotenv
 ## Author
 - Website - [Tatjana Markovic](https://my-react-portfolio-tatjana.vercel.app/)
 - LinkedIn - [Tatjana Marković](https://www.linkedin.com/in/tatjana-markovi%C4%87-919501189/)
