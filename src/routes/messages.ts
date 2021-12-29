@@ -3,11 +3,7 @@ import controller from '../controllers/messages';
 
 const router = express.Router();
 
-router.get('/', controller.getMessages);
-router.get('/:id', controller.getMessage);
-router.put('/:id', controller.updateMessage);
-router.delete('/:id', controller.deleteMessage);
-router.post('/', controller.addMessage);
+router.all('/', controller.getMessage);
 
 export default router;
 

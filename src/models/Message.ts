@@ -1,5 +1,5 @@
 interface Message{
-    message: String
+    message: string
 }
 
 export default Message;
