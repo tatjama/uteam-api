@@ -7,4 +7,5 @@ export interface IUserService{
    // findById: (id: string) => Promise<string>;
    findByEmailOrUsername: (email: string, username: string) => Promise<UserModel | null>
    // findByUsername: (username: string) => Promise<string>;
+  // loginUser: (email: string, username: string, password: string) => Promise<UserModel | null>
 }
