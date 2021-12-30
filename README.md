@@ -22,7 +22,12 @@
     npm run lint
 
 ## Overview
-    Uteam is an api server that listens on port 5000 and returns JSON for all requests with confirmation that everything is O.K. It was tested with the help of a Postman.
+    Uteam is an api server that listens on port 5000
+    Endpoints:
+    1. '/' -  returns JSON  with confirmation that everything is O.K. 
+    2. '/register' - new user registration (required: username, email and password), return user id,
+    3. '/login' - user login (required: username and password or  email and password) 
+    It was tested with the help of a Postman.
 
 ## Build with 
     1. Node.js
@@ -32,6 +37,8 @@
     5. MySQL2
     6. Sequelize
     7. Dotenv
+    8. Body-parser
+    9. Bcryptjs
 ## Author
 - Website - [Tatjana Markovic](https://my-react-portfolio-tatjana.vercel.app/)
 - LinkedIn - [Tatjana Marković](https://www.linkedin.com/in/tatjana-markovi%C4%87-919501189/)

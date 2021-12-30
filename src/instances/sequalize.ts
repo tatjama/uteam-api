@@ -3,9 +3,9 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-const DB = process.env.MYSQL_DB || '';
-const USERNAME = process.env.MYSQL_USERNAME || '';
-const PASSWORD = process.env.MYSQL_PASSWORD || '';
+const DB = process.env.MYSQL_DB || 'appdb';
+const USERNAME = process.env.MYSQL_USERNAME || 'root';
+const PASSWORD = process.env.MYSQL_PASSWORD || 'root';
 const PORT = Number(process.env.MYSQL_PORT) || 3306;
 
 export const sequelize = new Sequelize(DB, USERNAME, PASSWORD, {
