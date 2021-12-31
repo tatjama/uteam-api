@@ -4,7 +4,7 @@ import bcryptjs from 'bcryptjs';
 import { RegisterUserDto } from "../dto/register.user.dto";
 import { LoginUserDto } from "../dto/login.user.dto";
 class UsersMiddleware{ 
-    async validateRegisterUserFieldsExist(req: Request, res: Response, next: NextFunction): Promise<void>{
+     validateRegisterUserFieldsExist = async(req: Request, res: Response, next: NextFunction): Promise<void> => {
         if(req.body && req.body.username && req.body.email && req.body.password){
             next();
         }else{
@@ -12,7 +12,7 @@ class UsersMiddleware{
         }
     }
 
-    async validateSameUser(req: Request, res: Response, next: NextFunction): Promise<void>{
+     validateSameUser = async(req: Request, res: Response, next: NextFunction): Promise<void> => {
         const user: RegisterUserDto | null = await UserService.findByEmailOrUsername(req.body.email, req.body.username );
         if(user){
             res.status(400).send({ error: 'User with that username or email already exists' });
@@ -21,7 +21,7 @@ class UsersMiddleware{
         }
     }
     
-    async validatePassword(req: Request, res: Response, next: NextFunction): Promise<void>{
+     validatePassword = async(req: Request, res: Response, next: NextFunction): Promise<void> => {
         const user: LoginUserDto | null = await UserService.findByEmailOrUsername(req.body.email, req.body.username );
         if(user){            
            if( bcryptjs.compareSync(req.body.password, user.password)){               
@@ -34,7 +34,7 @@ class UsersMiddleware{
         }
     }
 
-    async validateLoginUserFieldsExist(req: Request, res: Response, next: NextFunction): Promise<void>{
+    validateLoginUserFieldsExist = async(req: Request, res: Response, next: NextFunction): Promise<void> => {
         if(req.body && req.body.password){
             if(  req.body.username ){
                  req.body.email = '';

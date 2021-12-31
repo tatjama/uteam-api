@@ -13,7 +13,7 @@ export const sequelize = new Sequelize(DB, USERNAME, PASSWORD, {
     port: PORT ,
 });
 
-const mySequalize =  async () => {
+const mySequalize =  async ():Promise<void> => {
     try {
         await sequelize.authenticate();
         console.log('Connection has been established successfully.');
