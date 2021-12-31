@@ -1,5 +1,4 @@
 import { Request, Response, NextFunction } from "express";
-import { UserModel } from '../models/User';
 import  UserService  from '../services/user.service';
 import bcryptjs from 'bcryptjs';
 import { RegisterUserDto } from "../dto/register.user.dto";

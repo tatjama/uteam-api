@@ -2,6 +2,7 @@ import { Request, Response} from 'express';
 import { message } from '../utility/data';
 import UserService from '../services/user.service';
 import bcryptjs from 'bcryptjs';
+import AuthController from '../auth/controllers/auth.controller';
 
 const getMessage = async (req: Request, res: Response) => {
     const result = message;
@@ -9,7 +10,7 @@ const getMessage = async (req: Request, res: Response) => {
 }
 
 const login = async ( req: Request, res: Response) => {
-    const jwtToken = "myJWTtoken";
+    const jwtToken = await AuthController.createJWT(req, res);
     const result = {"message": message.message, "token": jwtToken};
     return res.status(200).json(result);
 }

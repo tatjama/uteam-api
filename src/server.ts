@@ -1,29 +1,17 @@
 
+import dotenv from 'dotenv';
+dotenv.config();
 import bodyParser from 'body-parser';
 import  express, {  Application, Request, Response } from 'express';
 import routes from './routes/users.routes';
-import dotenv from 'dotenv';
 import { User } from './models/User';
-
-dotenv.config();
-
 
 const app: Application = express();
 app.use(bodyParser.json());
 
 /**Logging all users from db (table users) */
-
-/*async function createUser(){
-   await  User.create({
-        username: 'user3',
-        email: 'user@example.com',
-        password: 'password'
-    });
-
-}
-createUser();*/
-
-( async () =>  console.log(await User.findAll()))();  
+( async () =>  console.log(await User.findAll()))();
+  
 /**Routes */
 app.use('/', routes);
 app.use('/login', routes);
