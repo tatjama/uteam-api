@@ -5,6 +5,7 @@
   - [Instruction](#instruction)
   - [Overview](#overview)
   - [Built with](#built-with)
+  - [Screenshot](#screenshot)
   - [Author](#author)
 
 ## Instruction:
@@ -41,6 +42,13 @@
     8. Body-parser
     9. Bcryptjs
     10. Jsonwebtoken
+
+### Screenshot
+
+![Postman register](./public/screenshots/register.png)
+![MySQL "users" table](./public/screenshots/db-users.png)
+![Browser /users](./public/screenshots/users.png)
+![Postman login](./public/screenshots/login.png)
 ## Author
 - Website - [Tatjana Markovic](https://my-react-portfolio-tatjana.vercel.app/)
 - LinkedIn - [Tatjana Marković](https://www.linkedin.com/in/tatjana-markovi%C4%87-919501189/)

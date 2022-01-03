@@ -8,7 +8,7 @@ router.get('/', controller.getMessage);
 router.post('/login', 
      UsersMiddleware.validateLoginUserFieldsExist, UsersMiddleware.validatePassword, controller.login);
 router.post('/register',
-     UsersMiddleware.validateRegisterUserFieldsExist, UsersMiddleware.validateSameUser, controller.register);
-
+     UsersMiddleware.validateRegisterUserFieldsExist, UsersMiddleware.validateUserNoExist, controller.register);
+router.get('/users', controller.getUsers)
 export default router;
 
