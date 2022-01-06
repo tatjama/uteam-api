@@ -1,11 +1,11 @@
 import { Sequelize } from 'sequelize';
-import dotenv from 'dotenv';
+//import dotenv from 'dotenv';
 
-dotenv.config();
+//dotenv.config();
 
-const DB = process.env.MYSQL_DB || '';
-const USERNAME = process.env.MYSQL_USERNAME || '';
-const PASSWORD = process.env.MYSQL_PASSWORD || '';
+const DB = process.env.MYSQL_DB || 'appdb';
+const USERNAME = process.env.MYSQL_USERNAME || 'root';
+const PASSWORD = process.env.MYSQL_PASSWORD || 'root';
 const PORT = Number(process.env.MYSQL_PORT) || 3306;
 
 export const sequelize = new Sequelize(DB, USERNAME, PASSWORD, {
@@ -13,7 +13,7 @@ export const sequelize = new Sequelize(DB, USERNAME, PASSWORD, {
     port: PORT ,
 });
 
-const mySequalize =  async () => {
+const mySequalize =  async ():Promise<void> => {
     try {
         await sequelize.authenticate();
         console.log('Connection has been established successfully.');
