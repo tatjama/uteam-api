@@ -2,7 +2,7 @@ import { Request } from 'express';
 import jwt from 'jsonwebtoken';
 import bcryptjs from 'bcryptjs';
 
-const jwtSecret: string = process.env.JWT_SECRET || 'JWTSecretString';
+const jwtSecret: string = process.env.JWT_SECRET as string;
 const tokenExpiry: number = 60 * 60 * 10;
 
 export interface AuthResponse { 

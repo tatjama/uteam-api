@@ -22,7 +22,7 @@ const register = async (req: Request, res: Response): Promise<Response<Message>>
     return res.status(201).json({ message: `user id = ${userId}`});
 }
 
-const getUsers = async( res: Response): Promise<Response<LoginUserDto[]>> => {
+const getUsers = async( req: Request, res: Response): Promise<Response<LoginUserDto[]>> => {
     const result: LoginUserDto[]= await UserService.getUsers(0, 10);
     return res.status(200).json(result);
 }
