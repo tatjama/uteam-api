@@ -2,10 +2,12 @@ import { Request, Response, NextFunction } from "express";
 import  UserService  from '../services/user.service';
 import bcryptjs from 'bcryptjs';
 import { LoginUserDto } from "../dto/login.user.dto";
+import { validationResult } from 'express-validator';
 class UsersMiddleware{ 
-     validateRegisterUserFieldsExist = async(req: Request, res: Response, next: NextFunction): Promise<void> => {
-        (req.body && req.body.username && req.body.email && req.body.password)? next()
-        : res.status(400).send({ error: 'Missing username, email or password' });
+     
+    validateBodyFieldsErrors = (req: Request, res: Response, next: NextFunction) => {
+        const errors = validationResult( req);
+        errors.isEmpty()? next(): res.status(400).send({ errors: errors.array() });
     }
 
      validateUserNoExist = async(req: Request, res: Response, next: NextFunction): Promise<void> => {
@@ -44,6 +46,7 @@ class UsersMiddleware{
             res.status(400).send({ error: 'Missing username, email or password' });
         }
     }
+    
 }
 
 export default new UsersMiddleware();
