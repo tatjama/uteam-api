@@ -3,7 +3,7 @@ import UsersMiddleware from '../middleware/users.middleware';
 import controller from '../controllers/users.controller';
 import { body } from 'express-validator';
 
-const router = express.Router();
+const router: express.Router = express.Router();
 
 router.get('/', controller.getMessage);
 

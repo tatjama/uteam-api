@@ -1,5 +1,6 @@
 import { Model, DataTypes} from 'sequelize';
 import { sequelize } from '../instances/sequalize';
+import { Profile } from './Profile';
 export interface UserModel extends Model { 
     id: number;
     username: string;
@@ -16,10 +17,12 @@ export const User = sequelize.define<UserModel>('User', {
     },
     username: {
         type : new DataTypes.STRING(128),
+        unique: true,
         allowNull: false
     },
     email: {
         type: new DataTypes.STRING(128),
+        unique: true,
         allowNull: false
     },
     password : {
@@ -27,5 +30,11 @@ export const User = sequelize.define<UserModel>('User', {
         allowNull: false
     }
 }
-)
+);
 
+User.sync();
+Profile.belongsTo(User, { foreignKey: 'userId', targetKey: 'id' });
+//Profile.belongsTo(User, { as: 'user', foreignKey: 'userId' });
+//Profile.belongsTo(User, { foreignKey: 'userId' });
+//User.hasOne(Profile);
+User.hasOne(Profile)//, {as: 'profile', foreignKey: 'userId'});
