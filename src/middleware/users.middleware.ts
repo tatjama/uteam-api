@@ -1,8 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import  UserService  from '../services/user.service';
-import bcryptjs from 'bcryptjs';
-import { LoginUserDto } from "../dto/login.user.dto";
 import { validationResult } from 'express-validator';
+import { UserDto } from '../dto/user.dto';
 class UsersMiddleware{ 
      
     validateBodyFieldsErrors = (req: Request, res: Response, next: NextFunction) => {
@@ -11,19 +10,14 @@ class UsersMiddleware{
     }
 
      validateUserNoExist = async(req: Request, res: Response, next: NextFunction): Promise<void> => {
-        const user: LoginUserDto | null = await UserService.findByEmailOrUsername(req.body.email, req.body.username );
+        const user: UserDto | null = await UserService.findByEmailOrUsername(req.body.email, req.body.username );
         user? res.status(400).send({ error: 'User with that username or email already exists' }): next();        
     }
     
      validatePassword = async(req: Request, res: Response, next: NextFunction): Promise<void> => {
-        const user: LoginUserDto | null = await UserService.findByEmailOrUsername(req.body.email, req.body.username );        
+        const user: UserDto | null = await UserService.verifyLogin(req.body.email, req.body.username, req.body.password );        
         if(user){ 
-           if( bcryptjs.compareSync(req.body.password, user.password)){
-                req.body.id = user.id;
-                next();
-                }else{
-            res.status(404).send({error: 'Invalid username or password'});
-           }           
+          next();           
         }else{
             res.status(400).send({ error: 'User with that username or email is not exists' });
         }
