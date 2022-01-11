@@ -14,7 +14,7 @@ export interface ProfileDto{
 
 export const createProfileDto  =  
 (id: number, name: string, profilePhoto: string, status: StatusEnumValue, user: UserModel): ProfileDto => {
-    const userDto: LoginUserDto =  createLoginUserDto(user.id, user.username, user.email, user.password);
+    const userDto: LoginUserDto =  createLoginUserDto(user.id,user.username, user.email, user.password );
     return { 
         id : id,
         name: name,
