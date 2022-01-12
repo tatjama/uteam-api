@@ -1,10 +1,9 @@
 import { ProfileDto } from '../dto/profile.dto';
 import { IProfileService } from './profile.interface';
-import ProfilesDao from '../daos/profiles.dao';
+import ProfilesDao from '../dao/profiles.dao';
 
 class ProfileService implements IProfileService{
     createProfile = async(profileDto: ProfileDto): Promise<number> => {
-        console.log(profileDto);
         return ProfilesDao.createProfile(profileDto);
     }
     

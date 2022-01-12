@@ -15,7 +15,7 @@ class UsersMiddleware{
     
      validatePassword = async(req: Request, res: Response, next: NextFunction): Promise<void> => {
         const user: UserDto | null = await UserService.verifyLogin(req.body.email, req.body.username, req.body.password );        
-        user? next(): res.status(403).send(new MyError( 'password', 'validation', 400,[{
+        user? next(): res.status(403).send(new MyError( 'credential error ', 'validation', 400,[{
                                                  message: 'Credentials are invalid!',
                                                 field: 'password'
                                             }]));
@@ -25,7 +25,7 @@ class UsersMiddleware{
         req.body.username = validator.trim(req.body.username);
         req.body.email = validator.trim(req.body.email);
         req.body.password = validator.trim(req.body.password);
-        const errors: MyError = new MyError('password fields', 'validation' ,400, []);
+        const errors: MyError = new MyError('registration error', 'validation' ,400, []);
         if(!validator.isAlphanumeric(req.body.username, 'sr-RS@latin', {ignore: '%#*-_'})){
             errors.arrayError.push({
                 message:'User name only excepts letters, numbers or %#*-_',
@@ -57,7 +57,7 @@ class UsersMiddleware{
 
     validateLoginUserFields = async(req: Request, res: Response, next: NextFunction): Promise<void> => {
         
-        const errors: MyError = new MyError('login fields', 'validation' ,400, []);
+        const errors: MyError = new MyError('login error', 'validation' ,400, []);
         if(req.body.username || req.body.email){
             if(req.body.username){
                 req.body.username = validator.trim(req.body.username);
@@ -102,32 +102,6 @@ class UsersMiddleware{
 
         errors.arrayError.length > 0? res.status(400).send(errors): next();
 
-        /*if(req.body && req.body.password){
-            if( req.body.username){
-                req.body.username = validator.trim(req.body.username);
-                if(validator.isAlphanumeric(req.body.username, 'sr-RS@latin', {ignore: '%#*-_'}) &&
-                    validator.isAlpha(req.body.username[0])){                    
-                    req.body.email = '';
-                    next();
-                }else{
-                    res.status(400).send({ error: 'Username must start with a letter and only excepts letters, numbers and #%-_*' })
-                }
-            }else{
-                if( req.body.email){
-                    req.body.email = validator.trim(req.body.email);
-                    if(validator.isEmail(req.body.email)){
-                        req.body.username = '';
-                        next();
-                    }else{
-                        res.status(400).send({ error: 'Invalid email format'});
-                    }                    
-                }else{
-                    res.status(400).send({ error: 'Missing username, email or password' });        
-                }
-            }            
-        }else{
-            res.status(400).send({ error: 'Missing username, email or password' });
-        }*/
     }
     
 }

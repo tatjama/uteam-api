@@ -47,7 +47,7 @@
     8. Body-parser
     9. Bcryptjs
     10. Jsonwebtoken
-    11. Express-validator
+    11. Validator
 
 ### Screenshot
 

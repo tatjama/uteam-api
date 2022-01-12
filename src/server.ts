@@ -1,4 +1,3 @@
-
 import dotenv from 'dotenv';
 dotenv.config();
 import bodyParser from 'body-parser';
@@ -13,9 +12,6 @@ app.use(bodyParser.json());
 
 /**Routes */
 app.use('/', userRoutes);
-//app.use('/login', userRoutes);
-//app.use('/register', userRoutes);
-//app.use('/users', userRoutes);
 app.use('/profiles', profileRoutes);
 
 console.log( allRoutes(app));
@@ -23,8 +19,8 @@ console.log( allRoutes(app));
 
 /**Error handlers */
 app.use((req: Request, res: Response): void => {
-    const error = new Error('404 - Not found');
-    res.status(404).json({ message: error.message })
+    const error: Error = new Error('404 - Not found');
+    res.status(404).json(error.message);
 })
 
 const PORT: number = Number(process.env.PORT) || 5000;

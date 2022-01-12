@@ -1,6 +1,6 @@
 import { IUserService } from './user.interface';
 import { RegisterUserDto } from '../dto/register.user.dto';
-import UsersDao from '../daos/users.dao';
+import UsersDao from '../dao/users.dao';
 import { UserDto } from '../dto/user.dto';
 
 class UserService implements IUserService {
