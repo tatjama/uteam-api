@@ -34,21 +34,13 @@ export const Profile = sequelize.define<ProfileModel>( 'Profile', {
     status: {
         type: DataTypes.ENUM({values: Object.keys(StatusEnumValue)}),
         allowNull: false
-    },
-    userId: {
-        type: DataTypes.INTEGER,
-        references: {
-            model: User,
-            key: 'id',            
-        },
-        unique: true,
-        allowNull: false         
     }
 })
 
-
-Profile.sync({ alter: true });
+Profile.belongsTo(User);
+//User.hasOne(Profile)//, {as: 'profile', foreignKey: 'userId'});
 //Profile.belongsTo(User, { as: 'user', foreignKey: 'userId', targetKey: 'id' });
 //Profile.belongsTo(User, { foreignKey: 'userId' });
 //User.hasOne(Profile);
+Profile.sync();
 

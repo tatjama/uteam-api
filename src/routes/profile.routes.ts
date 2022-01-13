@@ -6,9 +6,25 @@ const router: express.Router = express.Router();
 
 router.get('/', controller.getProfiles);
 
-router.post('/', controller.createProfile);
+router.post('/', 
+    ProfilesMiddleware.validateProfileFields, 
+    ProfilesMiddleware.validateProfileNoExist, 
+    controller.createProfile);
 
-router.get('/:id', ProfilesMiddleware.extractProfileId, controller.getProfileById);
+router.get('/:id', 
+    ProfilesMiddleware.extractProfileId, 
+    ProfilesMiddleware.validateProfileExists,
+    controller.getProfileById);
+
+router.put('/:id',
+    ProfilesMiddleware.validateProfileEditFields,
+    ProfilesMiddleware.extractProfileId,
+    ProfilesMiddleware.validateProfileExists,
+    controller.putProfile);    
+
+router.delete('/:id',
+    ProfilesMiddleware.extractProfileId,
+    controller.removeProfile);
 
 
 export default router;
