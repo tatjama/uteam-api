@@ -17,11 +17,6 @@ const getProfiles = async ( req: Request, res: Response): Promise<Response<Profi
     return res.status(200).json(result);
 }
 
-/*const getProfileById = async( req: Request, res: Response): Promise<Response<ProfileDto>> => {
-    const profile: ProfileDto | null = await ProfileService.getProfileById(req.body.id);
-    return res.status(200).json(profile);
-}*/
-
 const getProfileById = async( req: Request, res: Response): Promise<Response<ProfileDto>> => {
     return res.status(200).json(res.locals.profile);
 }
@@ -30,11 +25,8 @@ const getMessage = async (req: Request, res: Response):Promise<Response<Message>
     return res.status(200).json(message);
 }
 
-const putProfile = async (req: Request, res: Response): Promise<Response<ProfileDto>> => {
-    
+const putProfile = async (req: Request, res: Response): Promise<Response<ProfileDto>> => {    
     const updatedProfile = await ProfileService.putProfile(req.body);
-    //return res.status(200).json(res.locals.profile)
-    console.log(updatedProfile)
     return res.status(200).json(updatedProfile);
 }
 

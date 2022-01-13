@@ -1,6 +1,5 @@
 import { Model, DataTypes} from 'sequelize';
 import { sequelize } from '../instances/sequalize';
-import { Profile } from './Profile';
 export interface UserModel extends Model { 
     id: number;
     username: string;
@@ -33,11 +32,5 @@ export const User = sequelize.define<UserModel>('User', {
     }
 }
 );
-
-
-
-//Profile.belongsTo(User, { as: 'user', foreignKey: 'userId' });
-//Profile.belongsTo(User, { foreignKey: 'userId' });
-//User.hasOne(Profile);
 
 User.sync();

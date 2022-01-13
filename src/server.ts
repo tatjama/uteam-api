@@ -4,7 +4,7 @@ import bodyParser from 'body-parser';
 import  express, { Express, Request, Response } from 'express';
 import userRoutes from './routes/users.routes';
 import profileRoutes from './routes/profile.routes';
-import allRoutes from 'express-list-endpoints';
+//import allRoutes from 'express-list-endpoints';
 
 const app: Express = express();
 app.use(bodyParser.json());
@@ -14,7 +14,7 @@ app.use(bodyParser.json());
 app.use('/', userRoutes);
 app.use('/profiles', profileRoutes);
 
-console.log( allRoutes(app));
+//console.log( allRoutes(app));
 
 
 /**Error handlers */

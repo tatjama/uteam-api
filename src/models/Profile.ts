@@ -38,9 +38,5 @@ export const Profile = sequelize.define<ProfileModel>( 'Profile', {
 })
 
 Profile.belongsTo(User);
-//User.hasOne(Profile)//, {as: 'profile', foreignKey: 'userId'});
-//Profile.belongsTo(User, { as: 'user', foreignKey: 'userId', targetKey: 'id' });
-//Profile.belongsTo(User, { foreignKey: 'userId' });
-//User.hasOne(Profile);
 Profile.sync();
 
