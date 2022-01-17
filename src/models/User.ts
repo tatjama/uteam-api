@@ -12,20 +12,25 @@ export const User = sequelize.define<UserModel>('User', {
         type: DataTypes.INTEGER.UNSIGNED,
         autoIncrement: true,
         primaryKey: true,
+        unique: true,
         allowNull: false
     },
     username: {
-        type : new DataTypes.STRING(128),
+        type : DataTypes.STRING(128),
+        unique: true,
         allowNull: false
     },
+    
     email: {
-        type: new DataTypes.STRING(128),
+        type: DataTypes.STRING(128),
+        unique: true,
         allowNull: false
     },
     password : {
-        type: new DataTypes.STRING(128),
+        type: DataTypes.STRING(128),
         allowNull: false
     }
 }
-)
+);
 
+User.sync();

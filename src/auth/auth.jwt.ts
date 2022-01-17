@@ -2,7 +2,7 @@ import { Request } from 'express';
 import jwt from 'jsonwebtoken';
 import bcryptjs from 'bcryptjs';
 
-const jwtSecret: string = process.env.JWT_SECRET || 'JWTSecretString';
+const jwtSecret: string = process.env.JWT_SECRET as string;
 const tokenExpiry: number = 60 * 60 * 10;
 
 export interface AuthResponse { 
@@ -11,8 +11,8 @@ export interface AuthResponse {
 }
 class AuthJWT{
     createJWT = ( req: Request): AuthResponse => { 
-            const refreshId: string = req.body.id + jwtSecret;
-            const hash: string = bcryptjs.hashSync(refreshId, 10);
+            const refreshToken: string = req.body.username + jwtSecret;
+            const hash: string = bcryptjs.hashSync(refreshToken, 10);
             const token: string = jwt.sign(req.body, jwtSecret, { expiresIn: tokenExpiry});
             return ({accessToken: token, refreshToken: hash});        
     }

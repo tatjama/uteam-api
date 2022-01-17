@@ -29,8 +29,23 @@
     2. '/register' - new user registration (required: username, email and password), password hashed at db, return user id,
     3. '/login' - user login (required: username and password or  email and password), check password validity,
         create JWT , return O.K. message and JWT
+    4. '/profiles'  
+            - GET - returns list of profiles limit 20,
+            - POST - new profile creation ( required: name, profile Photo url and FK UserId)
+    5. '/profiles/: id'
+            - GET - returns one profile with id,
+            - PUT - update profile 
+            - DELETE - delete profile
+
     It was tested with the help of a Postman.
 
+    Input Validation:
+    Sanitisized with trim to remove white space
+    1. username -  Must start with a letter, only excepts letters,  numbers and #%-_*
+    2. email - example@example.com
+    3. password - min 6 characters
+    4. name - only letters and numbers
+    5. profilePhoto - only url
 ## Build with 
     1. Node.js
     2. Express, body-parser, cors
@@ -42,6 +57,7 @@
     8. Body-parser
     9. Bcryptjs
     10. Jsonwebtoken
+    11. Validator
 
 ### Screenshot
 
@@ -49,6 +65,10 @@
 ![MySQL "users" table](./public/screenshots/db-users.png)
 ![Browser /users](./public/screenshots/users.png)
 ![Postman login](./public/screenshots/login.png)
+![Errors register](./public/screenshots/errors-register.png)
+![Valid register](./public/screenshots/valid-register.png)
+![Errors login](./public/screenshots/errors-login.png)
+![Valid login](./public/screenshots/valid-login.png)
 ## Author
 - Website - [Tatjana Markovic](https://my-react-portfolio-tatjana.vercel.app/)
 - LinkedIn - [Tatjana Marković](https://www.linkedin.com/in/tatjana-markovi%C4%87-919501189/)

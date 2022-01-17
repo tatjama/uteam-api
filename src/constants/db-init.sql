@@ -2,8 +2,16 @@ create database 'uteamapi';
 use uteamapi;
 
 create table users(
-id int auto_increment primary key,
-username text not null,
-email text not null,
-password text not null,
+    id int auto_increment primary key,
+    username unique VARCHAR(128) not null,
+    email unique VARCHAR(128) not null,
+    password VARCHAR(128) not null,
+);
+
+create table profiles(
+    id int auto_increment primary key,
+    name VARCHAR(128) not null,
+    profilePhoto VARCHAR(255) not null,
+    status enum not null,
+    UserId int not null unique foreign key(userId) references users,
 );
