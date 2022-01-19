@@ -6,6 +6,7 @@ create table users(
     username unique VARCHAR(128) not null,
     email unique VARCHAR(128) not null,
     password VARCHAR(128) not null,
+    role enum not null,
 );
 
 create table profiles(

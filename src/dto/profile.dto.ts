@@ -13,7 +13,7 @@ export interface ProfileDto{
 
 export const createProfileDto  =  
 (id: number, name: string, profilePhoto: string, status: StatusEnumValue, user: UserModel): ProfileDto => {
-    const userDto: UserDto =  createUserDto(user.id,user.username, user.email );
+    const userDto: UserDto =  createUserDto(user.id,user.username, user.email, user.role);
     return { 
         id : id,
         name: name,

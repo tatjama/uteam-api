@@ -1,10 +1,17 @@
 import { Model, DataTypes} from 'sequelize';
 import { sequelize } from '../instances/sequalize';
+
+export enum RoleEnumValue{ 
+    COMPANY_USER = 'company_user' ,
+    COMPANY_ADMIN = 'company_admin',
+    SUPERADMIN = 'superadmin' 
+}
 export interface UserModel extends Model { 
     id: number;
     username: string;
     email: string;
     password: string;
+    role: RoleEnumValue;
 }
 
 export const User = sequelize.define<UserModel>('User', {
@@ -28,6 +35,10 @@ export const User = sequelize.define<UserModel>('User', {
     },
     password : {
         type: DataTypes.STRING(128),
+        allowNull: false
+    },
+    role: {
+        type: DataTypes.ENUM({values: Object.keys(RoleEnumValue)}),
         allowNull: false
     }
 }

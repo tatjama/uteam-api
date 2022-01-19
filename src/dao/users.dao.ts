@@ -11,14 +11,14 @@ class UsersDao{
 
     getUserByEmailOrUsername = async(email: string, username: string): Promise<UserDto | null> => {
       const user: UserModel | null= await User.findOne({ where: {[Op.or]:[{ email: email },{ username: username }] } });
-      return user? createUserDto(user.id, user.username, user.email): null;      
+      return user? createUserDto(user.id, user.username, user.email, user.role): null;      
     }
 
     verifyLogin = async(email: string, username: string, password: string): Promise<UserDto | null> => {
       const user: UserModel | null = await User.findOne({ where: {[Op.or]:[{ email: email },{ username: username }] } });
       if(user){
         if( bcryptjs.compareSync(password, user.password)){
-          return createUserDto(user.id, user.username, user.email)
+          return createUserDto(user.id, user.username, user.email, user.role)
           }else{
           return null  
      }
@@ -29,7 +29,7 @@ class UsersDao{
 
     getUsers = async(page: number, limit: number): Promise<UserDto[]> => {
       const users: UserModel[] = await User.findAll({offset: page *limit | 0, limit:limit | 10});
-      return users.map(user => createUserDto(user.id, user.username, user.email))
+      return users.map(user => createUserDto(user.id, user.username, user.email, user.role))
     }
  }
 
