@@ -13,8 +13,8 @@ class ProfilesMiddleware{
     validateProfileNoExist = async(req: Request, res: Response, next: NextFunction): Promise<void> => {
         const profile: ProfileDto | null = await ProfileService.getProfileByUserId( req.body.UserId );
         profile? res.status(400).send( new MyError( 'find profile', 'validation', 400,[{
-                                            message: 'profile with that username  already exists!',
-                                            field: 'username '
+                                            message: 'profile for that user already exists!',
+                                            field: 'UserId '
                                         }])): next();        
     }
 
