@@ -1,14 +1,15 @@
 import { Model, DataTypes } from 'sequelize';
 import {  sequelize } from '../instances/sequalize';
-import { Profile } from './Profile';
+import { slugify } from '../utility/helper';
+import MyError from './messages/MyError';
 
 export interface CompanyModel extends Model {
     id: number;
     name: string;
     logo: string;
     slug: string;
-    createdAt: Date;
-    updatedAt: Date;
+    readonly createdAt: Date;
+    readonly updatedAt: Date;
 }
 
 export const Company = sequelize.define<CompanyModel>( 'Company', {
@@ -28,36 +29,23 @@ export const Company = sequelize.define<CompanyModel>( 'Company', {
         type: DataTypes.STRING(255),
         allowNull: false
     },
-    /*slug: {
-        type: DataTypes.STRING(128),
-        allowNull: false,
-        unique: true,
-        set(value) {
-            this.setDataValue('slug', value);
-          },
-        get() {
-            const rawValue = this.getDataValue('slug');
-            return rawValue ? rawValue.toUpperCase() : null;
-          }
-    },*/
     slug: {
-        type: DataTypes.VIRTUAL,        
+        type: DataTypes.VIRTUAL,   
+        unique: true,   
         get() {
-          //return `${this.name} `;
-          return this.name.toString().toLowerCase().trim()
-          .replace(/\s+/g, '-') //replace spaces with -
-          .replace(/&/g, '-and-')
-          .replace(/[^\w-]+/g, '') // Remove all non-word chars
-          .replace(/--+/g, '-'); //Replace multiple - with single -
+          return slugify(this.name, this.id.toString()); 
         },
         set(value) {
-          throw new Error('Do not try to set the `slug` value!');
+          throw   new MyError( 'Error setter', 'Forbidden', 403, [{
+            message: `Do not try to set the 'slug' value = ${value} !` ,
+            field: 'slug'
+        }] );
         }
       },
 
     createdAt: {
         type: DataTypes.DATE,
-        allowNull: false
+        allowNull: false,
     },
     updatedAt: {
         type: DataTypes.DATE,
@@ -66,9 +54,4 @@ export const Company = sequelize.define<CompanyModel>( 'Company', {
 
 })
 
-/*Profile.belongsTo(User);
-User.hasOne(Profile);*/
-
-//Company.hasMany(Profile);
-//Profile.belongsTo(Company);
 Company.sync();
