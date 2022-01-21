@@ -16,6 +16,12 @@ router.get('/:id',
     CompaniesMiddleware.validateCompanyExists,
     controller.getCompanyById);
 
+router.put('/:id',
+    CompaniesMiddleware.validateCompanyFields,
+    CompaniesMiddleware.extractCompanyId,
+    CompaniesMiddleware.validateCompanyExists,
+    controller.putCompany);
+
 router.delete('/:id',
     CompaniesMiddleware.extractCompanyId,
     controller.removeCompany);    

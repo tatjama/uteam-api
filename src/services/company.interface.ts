@@ -7,5 +7,6 @@ export interface ICompanyService{
     isCompanyExistByName:(name: string) => Promise<boolean>;
     getCompanies: (page: number, limit: number) => Promise<CompanyDto[] | []>;
     getCompanyById:(id: string) => Promise<CompanyDto | null>;
+    putCompany: (companyRegisterDto: RegisterCompanyDto, id: string) => Promise<CompanyDto | null>;
     deleteById: ( id: string ) => Promise<void>; 
 }

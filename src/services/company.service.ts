@@ -24,6 +24,10 @@ class CompanyService implements ICompanyService {
         return CompaniesDao.getCompanyById(id);        
     }
 
+    putCompany  = async (companyRegisterDto: RegisterCompanyDto, id: string): Promise<CompanyDto | null> => {
+        return CompaniesDao.updateCompanyById(companyRegisterDto, id);
+    }
+
     deleteById = async (id: string): Promise<void> => {
         CompaniesDao.deleteById(id);
    }
