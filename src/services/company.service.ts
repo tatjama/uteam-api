@@ -23,6 +23,10 @@ class CompanyService implements ICompanyService {
     getCompanyById =  async (id: string): Promise<CompanyDto | null> => {
         return CompaniesDao.getCompanyById(id);        
     }
+
+    deleteById = async (id: string): Promise<void> => {
+        CompaniesDao.deleteById(id);
+   }
 }
 
 export default new CompanyService();

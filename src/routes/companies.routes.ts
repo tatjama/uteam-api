@@ -16,4 +16,8 @@ router.get('/:id',
     CompaniesMiddleware.validateCompanyExists,
     controller.getCompanyById);
 
+router.delete('/:id',
+    CompaniesMiddleware.extractCompanyId,
+    controller.removeCompany);    
+
 export default router;

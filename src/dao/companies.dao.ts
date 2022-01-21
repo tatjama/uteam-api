@@ -45,6 +45,9 @@ class CompaniesDao{
     }   
 
 
+    deleteById = async ( companyId: string): Promise<void> => {
+        await Company.destroy({ where: { id: companyId}});
+}
 }
 
 export default new CompaniesDao();

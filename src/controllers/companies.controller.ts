@@ -17,4 +17,9 @@ const getCompanyById  = async( req: Request, res: Response): Promise<Response<Co
     return res.status(200).json(res.locals.company);
 }
 
-export default { createCompany, getCompanies, getCompanyById }
+const removeCompany = async( req: Request, res: Response): Promise<Response> => {
+    await CompanyService.deleteById(req.body.id);
+    return res.status(204).json();    
+}
+
+export default { createCompany, getCompanies, getCompanyById, removeCompany }

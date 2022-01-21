@@ -6,5 +6,6 @@ export interface ICompanyService{
     //getCompanyByName:(name: string) => Promise<CompanyDto | null>;
     isCompanyExistByName:(name: string) => Promise<boolean>;
     getCompanies: (page: number, limit: number) => Promise<CompanyDto[] | []>;
-    getCompanyById:(id: string) => Promise<CompanyDto | null> 
+    getCompanyById:(id: string) => Promise<CompanyDto | null>;
+    deleteById: ( id: string ) => Promise<void>; 
 }
