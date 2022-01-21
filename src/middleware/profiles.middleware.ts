@@ -10,12 +10,20 @@ class ProfilesMiddleware{
         next();
     }
     
-    validateProfileNoExist = async(req: Request, res: Response, next: NextFunction): Promise<void> => {
+   /* validateProfileNoExist = async(req: Request, res: Response, next: NextFunction): Promise<void> => {
         const profile: ProfileDto | null = await ProfileService.getProfileByUserId( req.body.UserId );
         profile? res.status(400).send( new MyError( 'find profile', 'validation', 400,[{
                                             message: 'profile for that user already exists!',
                                             field: 'UserId '
                                         }])): next();        
+    }*/
+
+    isProfileNoExist = async(req: Request, res: Response, next: NextFunction): Promise<void> => {
+        const isProfileExist: boolean = await ProfileService.isProfileExistByUserId(req.body.UserId);
+        isProfileExist? res.status(400).send( new MyError ('find profile', 'validation', 400,[{
+                                            message: 'profile for that user already exists!',
+                                            field: 'UserId '
+                                        }])): next();
     }
 
     // CASE - NAME AND PHOTO URL ARE REQUIRED

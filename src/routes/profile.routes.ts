@@ -8,7 +8,8 @@ router.get('/', controller.getProfiles);
 
 router.post('/', 
     ProfilesMiddleware.validateProfileFields, 
-    ProfilesMiddleware.validateProfileNoExist, 
+    //ProfilesMiddleware.validateProfileNoExist, 
+    ProfilesMiddleware.isProfileNoExist, 
     controller.createProfile);
 
 router.get('/:id', 

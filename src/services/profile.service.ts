@@ -16,8 +16,12 @@ class ProfileService implements IProfileService{
         return ProfilesDao.getProfileById(id);        
     }
 
-    getProfileByUserId = async (userId: string): Promise<ProfileDto | null> => {
+    /*getProfileByUserId = async (userId: string): Promise<ProfileDto | null> => {
         return ProfilesDao.getProfileByUserId(userId);
+    }*/
+
+    isProfileExistByUserId = async(userId: string): Promise<boolean> => {
+        return ProfilesDao.isProfileExistByUserId(userId);
     }
 
     putProfile = async (profileDto: ProfileDto): Promise<ProfileDto | null> => {
