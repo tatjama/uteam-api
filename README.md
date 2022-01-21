@@ -36,6 +36,13 @@
             - GET - returns one profile with id,
             - PUT - update profile 
             - DELETE - delete profile
+    6. '/companies'
+            - POST - new company creation ( required: name, logo)
+            - GET - return list of companies limit 20,
+    7. '/companies/: id'
+            - GET - return one company with id,
+            - PUT - update company,
+            - DELETE - delete company
 
     It was tested with the help of a Postman.
 
@@ -69,6 +76,10 @@
 ![Valid register](./public/screenshots/valid-register.png)
 ![Errors login](./public/screenshots/errors-login.png)
 ![Valid login](./public/screenshots/valid-login.png)
+
+## Thanks to
+![Slugify](https://gist.github.com/mathewbyrne/1280286)
+
 ## Author
 - Website - [Tatjana Markovic](https://my-react-portfolio-tatjana.vercel.app/)
 - LinkedIn - [Tatjana Marković](https://www.linkedin.com/in/tatjana-markovi%C4%87-919501189/)

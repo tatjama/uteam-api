@@ -3,7 +3,6 @@ import { RegisterCompanyDto } from '../dto/register.company.dto';
 
 export interface ICompanyService{
     createCompany: ( registerCompanyDto: RegisterCompanyDto) => Promise<number>;
-    //getCompanyByName:(name: string) => Promise<CompanyDto | null>;
     isCompanyExistByName:(name: string) => Promise<boolean>;
     getCompanies: (page: number, limit: number) => Promise<CompanyDto[] | []>;
     getCompanyById:(id: string) => Promise<CompanyDto | null>;

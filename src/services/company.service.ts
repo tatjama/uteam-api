@@ -8,10 +8,6 @@ class CompanyService implements ICompanyService {
         return CompaniesDao.createCompany(registerCompanyDto);
     }
 
-    /*getCompanyByName = async(name: string): Promise<CompanyDto | null> => {
-        return CompaniesDao.getCompanyByName(name);
-    }*/
-
     isCompanyExistByName = async(name: string): Promise<boolean> => {
         return CompaniesDao.isCompanyExistByName(name);
     }
