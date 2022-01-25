@@ -25,6 +25,17 @@ app.use((req: Request, res: Response): void => {
     res.status(404).json(error.message);
 })
 
-const PORT: number = Number(process.env.PORT) || 5000;
+const PORT: number = Number(process.env.PORT) || 5002;
 
 app.listen(PORT, () => console.log('Server started at port ' + PORT));
+//TODO LIST:
+/**
+ * TODO - password to hash at model User setter
+ * TODO - at create Profile add optional field CompanyId
+ * TODO - at putProfile add optional field CompanyId 
+ * TODO - updateProfile change input parameters to RegisterProfileDto and id like in company
+ * TODO - add profiles in CompanyDto Model and
+ * TODO -  foreignKey UserId at Profile not null 
+ * TODO - foreignKey CompanyId at Profile allow null
+ * TODO - Check is user with Id Exist and Company with Id Exist on create profile
+ */

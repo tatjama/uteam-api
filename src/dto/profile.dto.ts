@@ -10,15 +10,15 @@ export interface ProfileDto{
     profilePhoto: string,
     status: StatusEnumValue,
     user: UserDto,
-    company?: CompanyDto
+    company: CompanyDto | null
 
 }
 
 export const createProfileDto  =  
 (id: number, name: string, profilePhoto: string, status: StatusEnumValue, user: UserModel, company: CompanyModel): ProfileDto => {
     const userDto: UserDto =  createUserDto(user.id,user.username, user.email, user.role);
-    const companyDto: CompanyDto = createCompanyDto(company.id, company.name, company.logo, company.slug, 
-        company.createdAt, company.updatedAt);
+    const companyDto: CompanyDto |null  = company? createCompanyDto(company.id, company.name, company.logo, company.slug, 
+        company.createdAt, company.updatedAt, []): null;
     return { 
         id : id,
         name: name,

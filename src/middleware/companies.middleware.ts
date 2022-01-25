@@ -9,14 +9,7 @@ class CompaniesMiddleware {
         req.body.id = req.params.id;
         next();
     }
-
-    /*validateCompanyNoExist = async(req: Request, res: Response, next: NextFunction): Promise<void> => {
-        const company: CompanyDto | null = await CompanyService.getCompanyByName( req.body.name );
-        company? res.status(400).send( new MyError( 'find company', 'validation', 400,[{
-                                            message: 'company with that name  already exists!',
-                                            field: 'name '
-                                        }])): next();        
-    }*/
+    
     isCompanyNoExist = async(req: Request, res: Response, next: NextFunction): Promise<void> => {
         const isCompanyExist: boolean = await CompanyService.isCompanyExistByName(req.body.name);
         isCompanyExist? res.status(400).send( new MyError ('find company', 'validation', 400,[{
@@ -35,6 +28,11 @@ class CompaniesMiddleware {
 
         if(req.body.name){
             req.body.name = validator.trim(req.body.name);
+            const isCompanyExist: boolean = await CompanyService.isCompanyExistByName(req.body.name);
+            isCompanyExist && errors.arrayError.push({
+                message: 'Company with that name already exists ',
+                field: 'name'
+            });
         } else {
             req.body.name = '';
             errors.arrayError.push({
