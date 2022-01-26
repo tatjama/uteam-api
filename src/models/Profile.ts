@@ -1,6 +1,7 @@
 import { Model, DataTypes } from 'sequelize';
 import {  sequelize } from '../instances/sequalize';
-import { User, UserModel } from './User';
+import { User } from './User';
+import { Company } from './Company';
 
 export enum StatusEnumValue{ 
     PENDING = 'pending' ,
@@ -12,7 +13,6 @@ export interface ProfileModel extends Model {
     name: string;
     profilePhoto: string;
     status: StatusEnumValue;
-    user: UserModel;
 }
 
 export const Profile = sequelize.define<ProfileModel>( 'Profile', {
@@ -28,7 +28,7 @@ export const Profile = sequelize.define<ProfileModel>( 'Profile', {
         allowNull: false
     },
     profilePhoto: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING(255),
         allowNull: false
     },
     status: {
@@ -39,5 +39,6 @@ export const Profile = sequelize.define<ProfileModel>( 'Profile', {
 
 Profile.belongsTo(User);
 User.hasOne(Profile);
+Company.hasMany(Profile);
+Profile.belongsTo(Company);
 Profile.sync();
-
