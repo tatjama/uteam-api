@@ -18,13 +18,14 @@
 3. compile TypeScript with
     tsc
 4. find it on
-    http://localhost:5001
+    http://localhost:5000
 5. start ESlint with
     npm run lint
 
 ## Overview
-    Uteam is an api server that listens on port 5001
-    Endpoints:
+    Uteam is an api server that listens on port 5000
+
+    ENDPOINTS:
     1. '/' -  returns JSON  with confirmation that everything is O.K. 
     2. '/register' - new user registration (required: username, email and password), password hashed at db, return user id,
     3. '/login' - user login (required: username and password or  email and password), check password validity,
@@ -46,13 +47,22 @@
 
     It was tested with the help of a Postman.
 
-    Input Validation:
+    INPUT VALIDATION:
     Sanitisized with trim to remove white space
-    1. username -  Must start with a letter, only excepts letters,  numbers and #%-_*
-    2. email - example@example.com
-    3. password - min 6 characters
-    4. name - only letters and numbers
-    5. profilePhoto - only url
+    User:
+        1. username -  Must start with a letter, only excepts letters,  numbers and #%-_*
+        2. email - example@example.com
+        3. password - min 6 characters
+    Profile:
+        4. name - only letters and numbers
+        5. profilePhoto - only url
+    Company:
+        6. name - only letters and numbers
+        7. logo - only url
+
+    RELATIONS:
+        user and profile = one to one,  
+        one company has many profiles
 ## Build with 
     1. Node.js
     2. Express, body-parser, cors
@@ -76,6 +86,9 @@
 ![Valid register](./public/screenshots/valid-register.png)
 ![Errors login](./public/screenshots/errors-login.png)
 ![Valid login](./public/screenshots/valid-login.png)
+![Errors company put](./public/screenshots/error-company-put.png)
+![Profile GET](./public/screenshots/profile-get.png);
+![Company GET](./public/screenshots/company-get.png);
 
 ## Thanks to
 ![Slugify](https://gist.github.com/mathewbyrne/1280286)
