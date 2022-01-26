@@ -12,6 +12,7 @@ router.post('/login',
      controller.login);
 
 router.post('/register',
+     UsersMiddleware.validateRegisterUserFieldsExist,
      UsersMiddleware.validateRegisterUserFields,
      UsersMiddleware.validateUserNoExist, 
      controller.register);

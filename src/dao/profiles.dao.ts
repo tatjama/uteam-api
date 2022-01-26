@@ -1,6 +1,8 @@
 import { ProfileDto, createProfileDto } from '../dto/profile.dto';
+import { ProfileUpdateDto} from '../dto/profile.update.dto';
 import { ProfileModel, Profile} from '../models/Profile';
 import { User } from '../models/User';
+import { Company } from '../models/Company';
 
 class ProfilesDao{
     createProfile = async (profileDto: ProfileDto): Promise<number> => {
@@ -13,42 +15,42 @@ class ProfilesDao{
                 {
                     offset: page *limit | 0, 
                     limit:limit | 20,
-                    include:[ {model: User }]
+                    include:[ {model: User }, {model:Company, required: false}]
                  }
             );
         //profiles.map(profile => console.log(profile.toJSON()));
         return profiles.map(profile => 
-            createProfileDto( profile.id, profile.name, profile.profilePhoto, profile.status, profile.getDataValue('User')));
+            createProfileDto( profile.id, profile.name, profile.profilePhoto, profile.status, 
+                profile.getDataValue('User'), profile.getDataValue('Company')));
     }
 
     getProfileById = async ( profileId: string ): Promise<ProfileDto | null> => {
         const profile: ProfileModel | null  = await Profile.findByPk(profileId, {
-            include:[ {model: User }],
+            include:[ {model: User }, {model: Company, required: false}],
         });
         return profile? createProfileDto(profile.id, profile.name, profile.profilePhoto, profile.status, 
-            profile.getDataValue('User')): null;
+            profile.getDataValue('User'), profile.getDataValue('Company')): null;
     }   
 
-    getProfileByUserId = async ( userId: string):Promise<ProfileDto | null> => {
-        const profile: ProfileModel | null = await Profile.findOne({ where: { UserId: Number(userId)},
-            include:[ {model: User }], 
-        })
-        return profile? createProfileDto( profile.id, profile.name, profile.profilePhoto, profile.status, 
-            profile.getDataValue('User')): null;
+    
+    isProfileExistByUserId = async (userId:string): Promise<boolean> => {
+        const profile: ProfileModel | null = await Profile.findOne({ where: {UserId: userId}});
+        return profile? true : false;
     }
 
-    updateProfileById = async (profileDto: ProfileDto): Promise<ProfileDto | null> => {
-         await Profile.update({ name: profileDto.name, profilePhoto: profileDto.profilePhoto}, {
+    updateProfileById = async (profileUpdateDto: ProfileUpdateDto): Promise<ProfileDto | null> => {
+         await Profile.update({ name: profileUpdateDto.name, profilePhoto: profileUpdateDto.profilePhoto
+            , CompanyId: profileUpdateDto.CompanyId}, {
              where: { 
-              id: profileDto.id,   
+              id: profileUpdateDto.id,   
              }
          })
-         const updatedProfile: ProfileModel | null= await Profile.findByPk(profileDto.id, {
-              include:[ {model: User }],
+         const updatedProfile: ProfileModel | null= await Profile.findByPk(profileUpdateDto.id, {
+              include:[ {model: User }, {model: Company, required: false}],
         });
-        return updatedProfile? createProfileDto(updatedProfile.id, updatedProfile.name, 
-            updatedProfile.profilePhoto, updatedProfile.status, updatedProfile.getDataValue('User')) : null;
-     
+        return updatedProfile? createProfileDto(updatedProfile.id, updatedProfile.name, updatedProfile.profilePhoto, 
+                updatedProfile.status, updatedProfile.getDataValue('User'), updatedProfile.getDataValue('Company')) 
+                : null;     
     }
 
     deleteById = async ( profileId: string): Promise<void> => {

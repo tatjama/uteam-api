@@ -9,7 +9,7 @@ class CompaniesMiddleware {
         req.body.id = req.params.id;
         next();
     }
-
+    
     isCompanyNoExist = async(req: Request, res: Response, next: NextFunction): Promise<void> => {
         const isCompanyExist: boolean = await CompanyService.isCompanyExistByName(req.body.name);
         isCompanyExist? res.status(400).send( new MyError ('find company', 'validation', 400,[{
@@ -18,12 +18,21 @@ class CompaniesMiddleware {
                                         }])): next();
     }
 
+    
+    // CASE - NAME AND LOGO URL ARE REQUIRED
+    //If all fields are NOT required remove function and call validateCompanyEditFields
+    
     validateCompanyFields = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         
         const errors: MyError = new MyError( 'error create company', 'validation', 400, [] );
 
         if(req.body.name){
             req.body.name = validator.trim(req.body.name);
+            const isCompanyExist: boolean = await CompanyService.isCompanyExistByName(req.body.name);
+            isCompanyExist && errors.arrayError.push({
+                message: 'Company with that name already exists ',
+                field: 'name'
+            });
         } else {
             req.body.name = '';
             errors.arrayError.push({
@@ -75,5 +84,4 @@ class CompaniesMiddleware {
 } 
 
 export default new CompaniesMiddleware();
-
 

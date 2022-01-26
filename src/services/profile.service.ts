@@ -1,4 +1,5 @@
 import { ProfileDto } from '../dto/profile.dto';
+import { ProfileUpdateDto } from '../dto/profile.update.dto';
 import { IProfileService } from './profile.interface';
 import ProfilesDao from '../dao/profiles.dao';
 
@@ -16,11 +17,11 @@ class ProfileService implements IProfileService{
         return ProfilesDao.getProfileById(id);        
     }
 
-    getProfileByUserId = async (userId: string): Promise<ProfileDto | null> => {
-        return ProfilesDao.getProfileByUserId(userId);
+    isProfileExistByUserId = async(userId: string): Promise<boolean> => {
+        return ProfilesDao.isProfileExistByUserId(userId);
     }
 
-    putProfile = async (profileDto: ProfileDto): Promise<ProfileDto | null> => {
+    putProfile = async (profileDto: ProfileUpdateDto): Promise<ProfileDto | null> => {
         return ProfilesDao.updateProfileById(profileDto);
     }
 

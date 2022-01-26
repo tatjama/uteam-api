@@ -4,6 +4,10 @@ import { UserDto } from '../dto/user.dto';
 import validator from 'validator';
 import MyError from "../models/messages/MyError";
 class UsersMiddleware{      
+    validateRegisterUserFieldsExist = async(req: Request, res: Response, next: NextFunction): Promise<void> => {
+        (req.body && req.body.username && req.body.email && req.body.password)? next()
+        : res.status(400).send({ error: 'Missing username, email or password' });
+    }
     
      validateUserNoExist = async(req: Request, res: Response, next: NextFunction): Promise<void> => {
         const user: UserDto | null = await UserService.findByEmailOrUsername(req.body.email, req.body.username );
@@ -12,7 +16,8 @@ class UsersMiddleware{
                                             field: 'username or email'
                                         }]))): next();        
     }
-    
+
+        
      validatePassword = async(req: Request, res: Response, next: NextFunction): Promise<void> => {
         const user: UserDto | null = await UserService.verifyLogin(req.body.email, req.body.username, req.body.password );        
         user? next(): res.status(403).send(new MyError( 'credential error ', 'validation', 400,[{
@@ -58,6 +63,21 @@ class UsersMiddleware{
     validateLoginUserFields = async(req: Request, res: Response, next: NextFunction): Promise<void> => {
         
         const errors: MyError = new MyError('login error', 'validation' ,400, []);
+        if(req.body.password){
+            req.body.password = validator.trim(req.body.password);
+            if(validator.isLength(req.body.password, {min: 0, max:5})){
+                errors.arrayError.push({
+                    message: 'Must include password (min 6 characters)',
+                    field: 'password',
+                });
+            }
+        }else{
+            errors.arrayError.push({
+                message:'Must include a password',
+                field: 'password',
+            })
+        }
+
         if(req.body.username || req.body.email){
             if(req.body.username){
                 req.body.username = validator.trim(req.body.username);
@@ -92,14 +112,8 @@ class UsersMiddleware{
                 field: 'username or email'           
             })
         }
-        req.body.password = validator.trim(req.body.password);
-        if(validator.isLength(req.body.password, {min: 0, max:5})){
-            errors.arrayError.push({
-                message: 'Must include password (min 6 characters)',
-                field: 'password',
-             });
-        }
 
+        
         errors.arrayError.length > 0? res.status(400).send(errors): next();
 
     }

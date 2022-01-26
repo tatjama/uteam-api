@@ -7,8 +7,8 @@ const router: express.Router = express.Router();
 router.get('/', controller.getProfiles);
 
 router.post('/', 
-    ProfilesMiddleware.validateProfileFields, 
-    ProfilesMiddleware.validateProfileNoExist, 
+    ProfilesMiddleware.validateProfileFields,  
+    ProfilesMiddleware.isProfileNoExist, 
     controller.createProfile);
 
 router.get('/:id', 

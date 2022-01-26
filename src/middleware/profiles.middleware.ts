@@ -1,22 +1,25 @@
 import { Request, Response, NextFunction} from 'express';
+import UserService from '../services/user.service';
 import { ProfileDto } from '../dto/profile.dto';
 import ProfileService from '../services/profile.service';
 import MyError from '../models/messages/MyError';
 import validator from 'validator';
-
+import CompanyService from '../services/company.service';
+import { CompanyDto } from '../dto/company.dto';
 class ProfilesMiddleware{
     extractProfileId = (req: Request, res: Response, next: NextFunction) => {
         req.body.id = req.params.id;
         next();
     }
-    
-    validateProfileNoExist = async(req: Request, res: Response, next: NextFunction): Promise<void> => {
-        const profile: ProfileDto | null = await ProfileService.getProfileByUserId( req.body.UserId );
-        profile? res.status(400).send( new MyError( 'find profile', 'validation', 400,[{
+
+    isProfileNoExist = async(req: Request, res: Response, next: NextFunction): Promise<void> => {
+        const isProfileExist: boolean = await ProfileService.isProfileExistByUserId(req.body.UserId);
+        isProfileExist? res.status(400).send( new MyError ('find profile', 'validation', 400,[{
                                             message: 'profile for that user already exists!',
                                             field: 'UserId '
-                                        }])): next();        
+                                        }])): next();
     }
+
 
     // CASE - NAME AND PHOTO URL ARE REQUIRED
     //If all fields are NOT required remove function and call validateProfileEditFields
@@ -25,6 +28,18 @@ class ProfilesMiddleware{
     validateProfileFields = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         
         const errors: MyError = new MyError( 'error create profile', 'validation', 400, [] );
+        if(req.body.UserId){
+            const user = await UserService.findById(req.body.UserId);
+            !user && errors.arrayError.push({
+                message: 'User not found',
+                field: 'UserId'
+            })
+        }else{
+            errors.arrayError.push({
+                message: 'Missing required field',
+                field: 'UserId'
+            })
+        }
 
         if(req.body.name){
             req.body.name = validator.trim(req.body.name);
@@ -79,9 +94,6 @@ class ProfilesMiddleware{
                 });
             }
     
-        } else {
-            req.body.name = '';
-           // req.body.name = null;
         } 
 
         if(req.body.profilePhoto){
@@ -91,12 +103,18 @@ class ProfilesMiddleware{
                     message: 'Profile Photo must be url',
                     field: 'profilePhoto'
                 })
-            }
-    
-        } else {
-            req.body.profilePhoto = '';
-            //req.body.profilePhoto = null;
+            }    
         }         
+
+        if(req.body.CompanyId){
+            const company: CompanyDto | null= await CompanyService.getCompanyById(req.body.CompanyId);
+            if(!company){
+                errors.arrayError.push({
+                    message: 'company with that ID does not exist!',
+                    field: 'company id '
+                })
+            }
+        }
        
         errors.arrayError.length > 0? res.status(400).send(errors): next();
     }

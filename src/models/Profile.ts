@@ -13,7 +13,6 @@ export interface ProfileModel extends Model {
     name: string;
     profilePhoto: string;
     status: StatusEnumValue;
-    //user: UserModel;
 }
 
 export const Profile = sequelize.define<ProfileModel>( 'Profile', {
@@ -43,4 +42,3 @@ User.hasOne(Profile);
 Company.hasMany(Profile);
 Profile.belongsTo(Company);
 Profile.sync();
-

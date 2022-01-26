@@ -14,6 +14,11 @@ class UsersDao{
       return user? createUserDto(user.id, user.username, user.email, user.role): null;      
     }
 
+    getUserById = async(id: string): Promise<UserDto | null> => {
+      const user: UserModel | null= await User.findByPk(id);
+      return user? createUserDto(user.id, user.username, user.email, user.role): null;      
+    }
+
     verifyLogin = async(email: string, username: string, password: string): Promise<UserDto | null> => {
       const user: UserModel | null = await User.findOne({ where: {[Op.or]:[{ email: email },{ username: username }] } });
       if(user){

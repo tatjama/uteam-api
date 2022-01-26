@@ -1,6 +1,7 @@
 import { Company, CompanyModel } from '../models/Company';
 import { CompanyDto, createCompanyDto } from '../dto/company.dto';
 import { RegisterCompanyDto } from '../dto/register.company.dto';
+import { Profile } from '../models/Profile';
 
 class CompaniesDao{
     createCompany = async (registerCompanyDto: RegisterCompanyDto): Promise<number> => {
@@ -18,20 +19,20 @@ class CompaniesDao{
                 {
                     offset: page *limit | 0, 
                     limit:limit | 20,
-                   // include:[ {model: Profiles }]
+                    include:[ {model: Profile }]
                  }
             );
         return companies.map(company => 
             createCompanyDto( company.id, company.name, company.logo, company.slug, company.createdAt,
-                company.updatedAt));
+                company.updatedAt, company.getDataValue('Profiles')));
     }
 
     getCompanyById = async ( companyId: string ): Promise<CompanyDto | null> => {
         const company: CompanyModel | null  = await Company.findByPk(companyId, {
-            //include:[ {model: Profiles }],
+            include:[ {model: Profile }],
         });
         return company? createCompanyDto(company.id, company.name, company.logo, company.slug, company.createdAt, 
-            company.updatedAt): null;
+            company.updatedAt, company.getDataValue('Profiles')): null;
     } 
     
     updateCompanyById = async (companyRegisterDto: RegisterCompanyDto, id: string): Promise<CompanyDto | null> => {
@@ -41,10 +42,11 @@ class CompaniesDao{
             }
         });
         const updatedCompany: CompanyModel | null= await Company.findByPk(id, {
-             //include:[ {model: Profiles }],
+             include:[ {model: Profile }],
         });
         return updatedCompany? createCompanyDto(updatedCompany.id, updatedCompany.name, updatedCompany.logo, 
-        updatedCompany.slug, updatedCompany.createdAt, updatedCompany.updatedAt) : null;    
+               updatedCompany.slug, updatedCompany.createdAt, updatedCompany.updatedAt, 
+               updatedCompany.getDataValue('Profiles')) : null;    
    }
 
     deleteById = async ( companyId: string): Promise<void> => {
