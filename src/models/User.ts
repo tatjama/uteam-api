@@ -1,5 +1,6 @@
 import { Model, DataTypes} from 'sequelize';
 import { sequelize } from '../instances/sequalize';
+import { myHash } from '../utility/helper';
 
 export enum RoleEnumValue{ 
     COMPANY_USER = 'company_user' ,
@@ -33,15 +34,43 @@ export const User = sequelize.define<UserModel>('User', {
         unique: true,
         allowNull: false
     },
-    password : {
+    /*password : {
         type: DataTypes.STRING(128),
         allowNull: false
-    },
+    },*/
+    password: {
+        type: DataTypes.STRING,
+        set(value: string) {
+          this.setDataValue('password', myHash(value));
+        }
+      },
     role: {
         type: DataTypes.ENUM({values: Object.keys(RoleEnumValue)}),
-        allowNull: false
+        allowNull: false,
+        defaultValue: RoleEnumValue.COMPANY_USER,
     }
 }
 );
 
-User.sync();
+//User.sync();
+
+/* User.create({
+    username: "tanja120a",
+    email: "tanja120a@gmail.com",
+    password: "password",
+    role: RoleEnumValue.COMPANY_USER,
+    Profile: {
+        name: "Tanja",
+        profilePhoto: "http://google.com",
+        status: StatusEnumValue.PENDING,
+      Company: {
+        name: "Tanja's company",
+        logo: "http://google.com"
+      }
+    }
+  }, {
+    include: [{
+      association: User.Profile,
+      include: [ User.Company ]
+    }]
+  });*/

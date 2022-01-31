@@ -1,20 +1,25 @@
 import { ProfileUpdateDto, createProfileUpdateDto } from './profile.update.dto';
+import { UserDto } from './user.dto';
 export interface CompanyDto{
-    id: number,  
-    name: string,
-    logo: string,
+    id: number;
+    name: string;
+    logo: string;
     slug?: string;
     createdAt: Date;
     updatedAt: Date;
-    profiles: ProfileUpdateDto[],
+    profiles: ProfileUpdateDto[];
+    companyOwner: number;
 }
 
 export const createCompanyDto  =  
     (id: number, name: string, logo: string, slug: string, createdAt: Date, updatedAt: Date, 
-    profiles: ProfileUpdateDto[]): CompanyDto => {
+    profiles: ProfileUpdateDto[], companyOwner: UserDto): CompanyDto => {
         const createdProfiles: ProfileUpdateDto[] = 
               profiles.map((profile) => createProfileUpdateDto(profile.id, profile.name, 
-              profile.profilePhoto, profile.status , profile.UserId, profile.CompanyId )) 
+              profile.profilePhoto, profile.status , profile.UserId, profile.CompanyId ));
+        //const createdUser: UserDto =       
+              
+
         return { 
             id : id,
             name: name,
@@ -22,6 +27,7 @@ export const createCompanyDto  =
             slug: slug,
             createdAt: createdAt,
             updatedAt: updatedAt,
-            profiles: createdProfiles
+            profiles: createdProfiles,
+            companyOwner: companyOwner.id
         }
 }

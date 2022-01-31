@@ -24,4 +24,5 @@ create table companies (
     slug unique VARCHAR(128) not null,
     createdAt datetime not null,
     updatedAt datetime not null
+    companyOwner int not null unique foreign key (companyOwner) references users
 );

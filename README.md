@@ -91,7 +91,7 @@
 ![Company GET](./public/screenshots/company-get.png);
 
 ## Thanks to
-![Slugify](https://gist.github.com/mathewbyrne/1280286)
+[Slugify](https://gist.github.com/mathewbyrne/1280286)
 
 ## Author
 - Website - [Tatjana Markovic](https://my-react-portfolio-tatjana.vercel.app/)

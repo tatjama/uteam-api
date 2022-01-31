@@ -7,7 +7,7 @@ import Message from '../models/messages/Message';
 import { StatusEnumValue } from '../models/Profile';
 
 const createProfile = async ( req: Request, res: Response): Promise<Response<Message>> => {
-    req.body.status = StatusEnumValue.PENDING;
+ //   req.body.status = StatusEnumValue.PENDING;
     const profileId: number = await ProfileService.createProfile(req.body);
     return res.status(201).json({ message: ` Profile id = ${profileId}`});
 }

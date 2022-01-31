@@ -8,13 +8,17 @@ class UserService implements IUserService {
         return UsersDao.registerUser(registerUserDto);
    } 
 
+   isUserExistsById = async(id: string): Promise<boolean> =>{
+       return UsersDao.isUserExistsById(id);
+   }
+
     findByEmailOrUsername = async(email: string, username: string): Promise<UserDto | null> => {
        return await UsersDao.getUserByEmailOrUsername(email, username);
     }
 
-    findById = async(id:string): Promise<UserDto | null> => {
+    /*findById = async(id:string): Promise<UserDto | null> => {
         return await UsersDao.getUserById(id);
-    }
+    }*/
 
     verifyLogin = async(email: string, username: string, password: string): Promise<UserDto | null> => {
         return await UsersDao.verifyLogin(email, username, password);

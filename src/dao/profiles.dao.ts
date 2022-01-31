@@ -8,6 +8,10 @@ class ProfilesDao{
     createProfile = async (profileDto: ProfileDto): Promise<number> => {
         const profile: ProfileModel = await Profile.create(profileDto);
         return profile.id;
+        /*const profile: ProfileModel = await Profile.create(profileDto, { 
+            include:[ {model: User }, {model: Company}]
+        });
+        return profile.id;*/
     }
 
     getProfiles = async ( page: number, limit: number): Promise<ProfileDto[]> => {

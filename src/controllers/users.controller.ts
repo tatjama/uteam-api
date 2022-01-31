@@ -1,7 +1,7 @@
 import { Request, Response} from 'express';
 import { message } from '../utility/data';
 import UserService from '../services/user.service';
-import bcryptjs from 'bcryptjs';
+//import bcryptjs from 'bcryptjs';
 import AuthController, { AuthResponse } from '../auth/auth.jwt';
 import Message from '../models/messages/Message';
 import MessageLogin from '../models/messages/MessageLogin';
@@ -18,8 +18,8 @@ const login = async ( req: Request, res: Response): Promise<Response<MessageLogi
 }
 
 const register = async (req: Request, res: Response): Promise<Response<Message>> => {
-    req.body.role = RoleEnumValue.COMPANY_USER;
-    req.body.password = bcryptjs.hashSync(req.body.password, 10);
+   // req.body.role = RoleEnumValue.COMPANY_USER;
+   // req.body.password = bcryptjs.hashSync(req.body.password, 10);
     const userId: number = await UserService.create(req.body);
     return res.status(201).json({ message: `user id = ${userId}`});
 }

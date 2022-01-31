@@ -29,7 +29,7 @@ class ProfilesMiddleware{
         
         const errors: MyError = new MyError( 'error create profile', 'validation', 400, [] );
         if(req.body.UserId){
-            const user = await UserService.findById(req.body.UserId);
+            const user = await UserService.isUserExistsById(req.body.UserId);
             !user && errors.arrayError.push({
                 message: 'User not found',
                 field: 'UserId'
