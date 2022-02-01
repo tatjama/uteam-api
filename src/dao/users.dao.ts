@@ -1,7 +1,8 @@
 import { User, UserModel } from "../models/User";
 import { RegisterUserDto } from '../dto/register.user.dto';
 import { UserDto, createUserDto } from '../dto/user.dto';
-import  { Op, where } from 'sequelize';
+import  { Op
+ } from 'sequelize';
 import { myHashCompare } from '../utility/helper';
 
 import {Profile} from '../models/Profile';
@@ -18,11 +19,8 @@ class UsersDao{
       ]
       });
       
-       /*Company.afterCreate( company => {        
-         company.companyOwner =  user.id;
-      })*/
 
-      const name = registerUserDto.profile.company.name? registerUserDto.profile.company.name: registerUserDto.username
+      const name = registerUserDto.profile.company.name;
       const comp   = await Company.findOne({where:{name:name}});
       const newComp = comp?.toJSON();
       delete newComp['slug'];

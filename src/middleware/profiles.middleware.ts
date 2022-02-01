@@ -134,6 +134,35 @@ class ProfilesMiddleware{
         }
     }
 
+    // Validate profile fields when register
+    validateProfileFieldsExist =  async (req: Request, res: Response, next: NextFunction) => {
+        const errors: MyError = new MyError( 'error create profile', 'validation', 400, [] );
+        if(req.body.profile.name){
+            req.body.profile.name = validator.trim(req.body.profile.name);
+            if(!validator.isAlphanumeric(req.body.profile.name)){
+                errors.arrayError.push({
+                    message: 'Name only excepts letters and numbers',
+                    field: 'name'
+                });
+            }
+
+            if(req.body.profile.profilePhoto){
+                req.body.profile.profilePhoto = validator.trim(req.body.profile.profilePhoto);
+                if(!validator.isURL(req.body.profile.profilePhoto)){
+                    errors.arrayError.push({
+                    message: 'Profile Photo must be url',
+                    field: 'profilePhoto'
+                })
+               }
+            }
+        }else{
+            errors.arrayError.push({
+                message: 'Missing required field',
+                field: 'name'
+            });
+        }
+        errors.arrayError.length > 0? res.status(400).send(errors): next();
+    }
 
 }
 
