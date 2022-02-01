@@ -15,7 +15,7 @@ export interface UserModel extends Model {
     role: RoleEnumValue;
 }
 
-export const User = sequelize.define<UserModel>('User', {
+export const User = sequelize.define<UserModel>('user', {
     id: {
         type: DataTypes.INTEGER.UNSIGNED,
         autoIncrement: true,

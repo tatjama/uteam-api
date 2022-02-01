@@ -9,12 +9,12 @@ export interface CompanyModel extends Model {
     name: string;
     logo: string;
     slug: string;
-    //companyOwner: number;
+    companyOwner: number;
     readonly createdAt: Date;
     readonly updatedAt: Date;
 }
 
-export const Company = sequelize.define<CompanyModel>( 'Company', {
+export const Company = sequelize.define<CompanyModel>( 'company', {
     id:{
         type: DataTypes.INTEGER.UNSIGNED,
         autoIncrement: true,
@@ -29,7 +29,8 @@ export const Company = sequelize.define<CompanyModel>( 'Company', {
     },
     logo: {
         type: DataTypes.STRING(255),
-        allowNull: false
+        allowNull: false,
+        defaultValue:"https://cdn.w600.comps.canstockphoto.com/business-avatar-logo-eps-vector_csp37346646.jpg"
     },
     slug: {
         type: DataTypes.VIRTUAL,   
@@ -44,7 +45,15 @@ export const Company = sequelize.define<CompanyModel>( 'Company', {
         }] );
         }
       },
-      
+      companyOwner: {
+        type: DataTypes.INTEGER.UNSIGNED,
+        unique: true,
+        references: {
+          model: User, // Can be both a string representing the table name or a Sequelize model
+          key: 'id',
+          
+        }
+      },
     createdAt: {
         type: DataTypes.DATE,
         allowNull: false,

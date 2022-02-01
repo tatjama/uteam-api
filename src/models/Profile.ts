@@ -13,7 +13,7 @@ export interface ProfileModel extends Model {
     status: StatusEnumValue;
 }
 
-export const Profile = sequelize.define<ProfileModel>( 'Profile', {
+export const Profile = sequelize.define<ProfileModel>( 'profile', {
     id:{
         type: DataTypes.INTEGER.UNSIGNED,
         autoIncrement: true,
@@ -27,7 +27,8 @@ export const Profile = sequelize.define<ProfileModel>( 'Profile', {
     },
     profilePhoto: {
         type: DataTypes.STRING(255),
-        allowNull: false
+        allowNull: false,
+        defaultValue: "https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png"
     },
     status: {
         type: DataTypes.ENUM({values: Object.keys(StatusEnumValue)}),

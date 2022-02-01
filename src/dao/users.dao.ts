@@ -1,65 +1,34 @@
 import { User, UserModel } from "../models/User";
 import { RegisterUserDto } from '../dto/register.user.dto';
 import { UserDto, createUserDto } from '../dto/user.dto';
-import  { Op } from 'sequelize';
+import  { Op, where } from 'sequelize';
 import { myHashCompare } from '../utility/helper';
 
 import {Profile} from '../models/Profile';
 import {Company} from '../models/Company';
 
 class UsersDao{ 
-     registerUser = async(registerUserDto: RegisterUserDto): Promise<number> => {
-      /* const fullUser = await  User.create({
-        username: "tanja120a",
-        email: "tanja120a@gmail.com",
-        password: "password",
-        role: RoleEnumValue.COMPANY_USER,
-        Profile: {
-            name: "Tanja",
-            profilePhoto: "http://google.com",
-            status: StatusEnumValue.PENDING,
-          Company: {
-            name: "Tanja's company",
-            logo: "http://google.com"
-          }
-        }
-      }, {
-        include: [{
-          association: User.hasOne(Profile),
-          include: [ Profile.belongsTo(Company) ]
-        }]
-      });
-      return fullUser.id;*/
+     registerUser = async(registerUserDto: RegisterUserDto): Promise<number> => {      
+       console.log(registerUserDto)
       const user: UserModel =  await User.create(registerUserDto, {
         include: [{
           association: User.hasOne(Profile),
-          include: [ Profile.belongsTo(Company)]}
-          /*{
-          association: User.hasOne(Profile),
-          include: [ Profile.belongsTo(Company)//, User.hasMany(Company), 
-           // Company.belongsTo(User), Company.hasMany(Profile), Profile.belongsTo(User) 
-          ]},
-          {
-            association: User.hasMany(Company),
-            include: [Company.belongsTo(User)]
-          }
-          , 
-          {
-            association: Profile.belongsTo(User), 
-            include: [Company.hasMany(Profile)]
-          }*/
-        /*{
-          association:Company.belongsTo(User),
-        include:[User.hasMany(Company)]
-        },*/
+          include: [ Profile.belongsTo(Company)]}        
+
       ]
-      });  
+      });
       
-    
-  /*    const user: UserModel = await User.create(registerUserDto, {
-        include:[{model: Company}, {model: Profile}]
-      })   
-      */ 
+       /*Company.afterCreate( company => {        
+         company.companyOwner =  user.id;
+      })*/
+
+      const name = registerUserDto.profile.company.name? registerUserDto.profile.company.name: registerUserDto.username
+      const comp   = await Company.findOne({where:{name:name}});
+      const newComp = comp?.toJSON();
+      delete newComp['slug'];
+      newComp.companyOwner = user.id;
+      await Company.update(newComp, {where:{name:name}});
+      
       return user.id;
     }
 

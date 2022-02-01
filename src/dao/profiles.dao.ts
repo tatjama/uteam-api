@@ -7,21 +7,7 @@ import { Company } from '../models/Company';
 class ProfilesDao{
     createProfile = async (profileUpdateDto: ProfileUpdateDto): Promise<number> => {
         const profile: ProfileModel = await Profile.create(profileUpdateDto, {
-            include: [ {model: User }, {model: Company}
-                /*{
-              association: User.hasOne(Profile),
-              include: [ Profile.belongsTo(User)//, User.hasMany(Company), 
-               // Company.belongsTo(User), Company.hasMany(Profile), Profile.belongsTo(User) 
-              ]},
-              {
-                association:Company.belongsTo(User) ,
-                include: [User.hasMany(Company)]
-              }
-              , 
-              {
-                association: Profile.belongsTo(User), 
-                include: [Profile.belongsTo(Company)]
-              }*/
+            include: [ {model: User }, {model: Company}             
             ]});
         return profile.id;
     }
