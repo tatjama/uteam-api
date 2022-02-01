@@ -3,11 +3,13 @@ import {  sequelize } from '../instances/sequalize';
 import { slugify } from '../utility/helper';
 import MyError from './messages/MyError';
 
+import { User } from './User';
 export interface CompanyModel extends Model {
     id: number;
     name: string;
     logo: string;
     slug: string;
+    //companyOwner: number;
     readonly createdAt: Date;
     readonly updatedAt: Date;
 }
@@ -42,7 +44,7 @@ export const Company = sequelize.define<CompanyModel>( 'Company', {
         }] );
         }
       },
-
+      
     createdAt: {
         type: DataTypes.DATE,
         allowNull: false,
@@ -52,6 +54,5 @@ export const Company = sequelize.define<CompanyModel>( 'Company', {
         allowNull: false
     },
 
-})
+});
 
-Company.sync();

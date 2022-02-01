@@ -1,7 +1,5 @@
 import { Model, DataTypes } from 'sequelize';
 import {  sequelize } from '../instances/sequalize';
-import { User } from './User';
-import { Company } from './Company';
 
 export enum StatusEnumValue{ 
     PENDING = 'pending' ,
@@ -37,10 +35,3 @@ export const Profile = sequelize.define<ProfileModel>( 'Profile', {
         defaultValue: StatusEnumValue.PENDING,
     }
 })
-
-Profile.belongsTo(User);
-User.hasOne(Profile);
-Company.hasMany(Profile);
-Profile.belongsTo(Company);
-
-Profile.sync();

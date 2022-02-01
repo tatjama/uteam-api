@@ -47,5 +47,3 @@ export const User = sequelize.define<UserModel>('User', {
     }
 }
 );
-
-User.sync();

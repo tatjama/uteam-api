@@ -7,9 +7,12 @@ import profileRoutes from './routes/profile.routes';
 import companyRoutes from './routes/companies.routes';
 //import allRoutes from 'express-list-endpoints';
 
+import association from './models/associations';
+
 const app: Express = express();
 app.use(bodyParser.json());
   
+association();
 
 /**Routes */
 app.use('/', userRoutes);
