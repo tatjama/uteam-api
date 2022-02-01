@@ -5,8 +5,8 @@ import ProfilesDao from '../dao/profiles.dao';
 
 class ProfileService implements IProfileService{
 
-    createProfile = async(profileDto: ProfileDto): Promise<number> => {
-        return ProfilesDao.createProfile(profileDto);
+    createProfile = async(profileUpdateDto: ProfileUpdateDto): Promise<number> => {
+        return ProfilesDao.createProfile(profileUpdateDto);
     }
     
     getProfiles = async (page: number, limit: number): Promise<ProfileDto[] | []> => {

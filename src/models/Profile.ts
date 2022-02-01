@@ -33,7 +33,8 @@ export const Profile = sequelize.define<ProfileModel>( 'Profile', {
     },
     status: {
         type: DataTypes.ENUM({values: Object.keys(StatusEnumValue)}),
-        allowNull: false
+        allowNull: false,
+        defaultValue: StatusEnumValue.PENDING,
     }
 })
 
@@ -41,4 +42,5 @@ Profile.belongsTo(User);
 User.hasOne(Profile);
 Company.hasMany(Profile);
 Profile.belongsTo(Company);
+
 Profile.sync();
