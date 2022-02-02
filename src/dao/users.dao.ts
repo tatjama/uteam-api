@@ -1,33 +1,36 @@
 import { User, UserModel } from "../models/User";
 import { RegisterUserDto } from '../dto/register.user.dto';
 import { UserDto, createUserDto } from '../dto/user.dto';
-import  { Op
- } from 'sequelize';
+import  { Op} from 'sequelize';
 import { myHashCompare } from '../utility/helper';
 
 import {Profile} from '../models/Profile';
 import {Company} from '../models/Company';
-
+import { sequelize } from '../instances/sequalize';
 class UsersDao{ 
-     registerUser = async(registerUserDto: RegisterUserDto): Promise<number> => {      
-       console.log(registerUserDto)
-      const user: UserModel =  await User.create(registerUserDto, {
-        include: [{
-          association: User.hasOne(Profile),
-          include: [ Profile.belongsTo(Company)]}        
-
-      ]
+     registerUser = async(registerUserDto: RegisterUserDto): Promise<number> => { 
+      const name = registerUserDto.profile.company.name;
+      User.addHook('afterCreate', async (user, options) => {
+        await Company.update({ name: name, companyOwner: user.getDataValue('id') }, {
+          where: {
+            name: name
+          },
+          transaction: options.transaction
+        });
       });
       
-
-      const name = registerUserDto.profile.company.name;
-      const comp   = await Company.findOne({where:{name:name}});
-      const newComp = comp?.toJSON();
-      delete newComp['slug'];
-      newComp.companyOwner = user.id;
-      await Company.update(newComp, {where:{name:name}});
+      const newUser = await sequelize.transaction(async t => {
+        return await User.create(registerUserDto,  {
+          include: [{
+            association: User.hasOne(Profile),
+            include: [ Profile.belongsTo(Company)]}          
+        ],
+          transaction: t
+        });        
+      }); 
       
-      return user.id;
+      return newUser.id;
+
     }
 
     isUserExistsById = async (id: string): Promise<boolean> => {

@@ -23,7 +23,7 @@ class ProfilesDao{
         //profiles.map(profile => console.log(profile.toJSON()));
         return profiles.map(profile => 
             createProfileDto( profile.id, profile.name, profile.profilePhoto, profile.status, 
-                profile.getDataValue('User'), profile.getDataValue('Company')));
+                profile.getDataValue('user'), profile.getDataValue('company')));
     }
 
     getProfileById = async ( profileId: string ): Promise<ProfileDto | null> => {
@@ -31,7 +31,7 @@ class ProfilesDao{
             include:[ {model: User }, {model: Company, required: false}],
         });
         return profile? createProfileDto(profile.id, profile.name, profile.profilePhoto, profile.status, 
-            profile.getDataValue('User'), profile.getDataValue('Company')): null;
+            profile.getDataValue('user'), profile.getDataValue('company')): null;
     }   
 
     
@@ -51,7 +51,7 @@ class ProfilesDao{
               include:[ {model: User }, {model: Company, required: false}],
         });
         return updatedProfile? createProfileDto(updatedProfile.id, updatedProfile.name, updatedProfile.profilePhoto, 
-                updatedProfile.status, updatedProfile.getDataValue('User'), updatedProfile.getDataValue('Company')) 
+                updatedProfile.status, updatedProfile.getDataValue('user'), updatedProfile.getDataValue('company')) 
                 : null;     
     }
 

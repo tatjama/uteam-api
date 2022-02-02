@@ -36,7 +36,8 @@ export const Company = sequelize.define<CompanyModel>( 'company', {
         type: DataTypes.VIRTUAL,   
         unique: true,   
         get() {
-          return slugify(this.name, this.id.toString()); 
+          return slugify(this.name); 
+          //return slugify(this.name, this.id.toString()); 
         },
         set(value) {
           throw   new MyError( 'Error setter', 'Forbidden', 403, [{

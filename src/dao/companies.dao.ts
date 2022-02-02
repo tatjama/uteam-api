@@ -24,7 +24,7 @@ class CompaniesDao{
             );
         return companies.map(company => 
             createCompanyDto( company.id, company.name, company.logo, company.slug, company.createdAt,
-                company.updatedAt, company.getDataValue('Profiles')));
+                company.updatedAt, company.getDataValue('profiles')));
     }
 
     getCompanyById = async ( companyId: string ): Promise<CompanyDto | null> => {
@@ -32,7 +32,7 @@ class CompaniesDao{
             include:[ {model: Profile }],
         });
         return company? createCompanyDto(company.id, company.name, company.logo, company.slug, company.createdAt, 
-            company.updatedAt, company.getDataValue('Profiles')): null;
+            company.updatedAt, company.getDataValue('profiles')): null;
     } 
     
     updateCompanyById = async (companyRegisterDto: RegisterCompanyDto, id: string): Promise<CompanyDto | null> => {
@@ -46,7 +46,7 @@ class CompaniesDao{
         });
         return updatedCompany? createCompanyDto(updatedCompany.id, updatedCompany.name, updatedCompany.logo, 
                updatedCompany.slug, updatedCompany.createdAt, updatedCompany.updatedAt, 
-               updatedCompany.getDataValue('Profiles')) : null;    
+               updatedCompany.getDataValue('profiles')) : null;    
    }
 
     deleteById = async ( companyId: string): Promise<void> => {

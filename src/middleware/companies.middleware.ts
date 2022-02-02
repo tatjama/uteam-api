@@ -94,9 +94,9 @@ class CompaniesMiddleware {
                 field: 'name'
             });
 
-            if(!validator.isAlphanumeric(req.body.profile.company.name, 'en-US', {ignore: '&! #*-_+,.'})){
+            if(!validator.isAlphanumeric(req.body.profile.company.name, 'en-US', {ignore: "%#*- '"})){
                 errors.arrayError.push({
-                    message: 'Name only excepts letters, numbers and "&! #*-_+,." characters',
+                    message: 'Name only excepts letters, numbers and "%#*- \'" characters',
                     field: 'name'
                 });
             }
