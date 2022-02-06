@@ -11,9 +11,10 @@ export interface AuthResponse {
 }
 class AuthJWT{
     createJWT = ( req: Request): AuthResponse => { 
+        const { username } = req.body
             const refreshToken: string = req.body.username + jwtSecret;
             const hash: string = bcryptjs.hashSync(refreshToken, 10);
-            const token: string = jwt.sign(req.body, jwtSecret, { expiresIn: tokenExpiry});
+            const token: string = jwt.sign({username}, jwtSecret, { expiresIn: tokenExpiry});
             return ({accessToken: token, refreshToken: hash});        
     }
 }

@@ -7,9 +7,16 @@ import profileRoutes from './routes/profile.routes';
 import companyRoutes from './routes/companies.routes';
 //import allRoutes from 'express-list-endpoints';
 
+import passport from 'passport';
 import association from './models/associations';
 
 const app: Express = express();
+
+/**Passport */
+import './middleware/passport.middleware';
+
+app.use(passport.initialize());
+
 app.use(bodyParser.json());
   
 association();

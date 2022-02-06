@@ -6,9 +6,9 @@ import { Company } from '../models/Company';
 
 class ProfilesDao{
     createProfile = async (profileUpdateDto: ProfileUpdateDto): Promise<number> => {
-        const profile: ProfileModel = await Profile.create(profileUpdateDto, {
-            include: [ {model: User }, {model: Company}             
-            ]});
+        const profile: ProfileModel = await Profile.create(profileUpdateDto
+            //, {include: [ {model: User }, {model: Company}]}
+            );
         return profile.id;
     }
 

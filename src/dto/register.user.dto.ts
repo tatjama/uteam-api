@@ -1,3 +1,4 @@
+import { Request } from 'express';
 export interface RegisterUserDtoLite{
     username: string,
     email: string,
@@ -14,5 +15,13 @@ export interface RegisterUserDto{
             name?: string,
             logo?: string,
         }
+    }
+}
+
+export interface ReqUser extends Request{
+    user?:{
+         id?:number,
+         email?: string,
+         username?: string
     }
 }

@@ -13,6 +13,6 @@ export const myHash = (value: string): string => {
     return bcryptjs.hashSync(value, 10);
 }
 
-export const myHashCompare = (hashedPassword: string, userPassword: string): boolean=> {
-    return bcryptjs.compareSync(hashedPassword, userPassword)? true: false;
+export const myHashCompare = ( userPassword: string, hashedPassword: string): boolean=> {
+    return bcryptjs.compareSync( userPassword, hashedPassword)? true: false;
 }
