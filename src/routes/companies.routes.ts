@@ -1,6 +1,7 @@
 import express from 'express';
 import passport from 'passport';
 import controller from '../controllers/companies.controller';
+import UsersMiddleware from '../middleware/users.middleware';
 import CompaniesMiddleware from '../middleware/companies.middleware';
 
 const router: express.Router = express.Router();
@@ -11,8 +12,9 @@ router.post('/',
     passport.authenticate('jwt', {session: false}),
     CompaniesMiddleware.validateCompanyFields, 
     CompaniesMiddleware.isCompanyNoExist,
+    UsersMiddleware.extractUserIdFromJWT,
     controller.createCompany);
-
+    
 router.get('/:id',
     CompaniesMiddleware.extractCompanyId, 
     CompaniesMiddleware.validateCompanyExists,

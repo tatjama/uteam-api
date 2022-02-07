@@ -47,7 +47,6 @@ export const Company = sequelize.define<CompanyModel>( 'company', {
       },
       companyOwner: {
         type: DataTypes.INTEGER.UNSIGNED,
-        unique: true,
         references: {
           model: User, // Can be both a string representing the table name or a Sequelize model
           key: 'id',

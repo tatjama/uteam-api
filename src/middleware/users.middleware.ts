@@ -10,6 +10,7 @@ class UsersMiddleware{
             const userId: number | null= await UserService.findByUsername(req.user.username);
             if(userId){
                 req.body.userId = userId;
+                req.body.companyOwner = userId;
                 next();
             }else{
                 res.status(400).send( (new MyError( 'find user by username', 'extract JWT', 400,[{
