@@ -1,7 +1,7 @@
 import { ProfileDto } from '../dto/profile.dto';
-import { ProfileUpdateDto } from '../dto/profile.update.dto';
+import { ProfileUpdateDto, ProfileCreateDto } from '../dto/profile.update.dto';
 export interface IProfileService{
-    createProfile: ( profileUpdateDto: ProfileUpdateDto) => Promise<number>;
+    createProfile: ( profileCreateDto: ProfileCreateDto) => Promise<number>;
     getProfiles:(page: number, limit: number) => Promise<ProfileDto[] | []>;    
     getProfileById:(id: string) => Promise<ProfileDto | null>;
     //getProfileByUserId: ( userId: string) => Promise<ProfileDto | null>;

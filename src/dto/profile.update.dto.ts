@@ -5,13 +5,13 @@ export interface ProfileUpdateDto{
     name: string,
     profilePhoto: string,
     status: StatusEnumValue,
-    UserId: number,
+    userId: number,
     CompanyId: number | null
 
 }
 
 export const createProfileUpdateDto  =  
-(id: number, name: string, profilePhoto: string, status: StatusEnumValue, UserId: number, CompanyId: number | null)
+(id: number, name: string, profilePhoto: string, status: StatusEnumValue, userId: number, CompanyId: number | null)
 : ProfileUpdateDto => {
    
     return { 
@@ -19,7 +19,32 @@ export const createProfileUpdateDto  =
         name: name,
         profilePhoto: profilePhoto,
         status: status,
-        UserId: UserId,
+        userId: userId,
         CompanyId: CompanyId,
     }
 }
+
+export interface ProfileCreateDto{
+    id: number,  
+    name: string,
+    profilePhoto: string,
+    status: StatusEnumValue,
+    userId: number,
+    CompanyId: number | null
+
+}
+
+export const createProfileCreateDto  =  
+(id: number, name: string, profilePhoto: string, status: StatusEnumValue, userId: number, CompanyId: number | null)
+: ProfileCreateDto => {
+   
+    return { 
+        id : id,
+        name: name,
+        profilePhoto: profilePhoto,
+        status: status,
+        userId: userId,
+        CompanyId: CompanyId,
+    }
+}
+

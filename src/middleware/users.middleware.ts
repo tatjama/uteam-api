@@ -9,7 +9,7 @@ class UsersMiddleware{
         if(req.user?.username){
             const userId: number | null= await UserService.findByUsername(req.user.username);
             if(userId){
-                req.body.UserId = userId;
+                req.body.userId = userId;
                 next();
             }else{
                 res.status(400).send( (new MyError( 'find user by username', 'extract JWT', 400,[{

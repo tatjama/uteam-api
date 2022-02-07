@@ -14,7 +14,7 @@ class ProfilesMiddleware{
     }
 
     isProfileNoExists = async(req: Request, res: Response, next: NextFunction): Promise<void> => {
-        const isProfileExist: boolean = await ProfileService.isProfileExistByUserId(req.body.UserId);
+        const isProfileExist: boolean = await ProfileService.isProfileExistByUserId(req.body.userId);
         isProfileExist? res.status(400).send( new MyError ('find profile', 'validation', 400,[{
                                             message: 'profile for that user already exists!',
                                             field: 'UserId '
@@ -37,7 +37,7 @@ class ProfilesMiddleware{
         console.log(req.rawHeaders[1].split(" ")[1]);
         console.log(req.user?.username);
         console.log(req.body.userId);*/
-        
+
         if(req.body.name){
             req.body.name = validator.trim(req.body.name);
         } else {

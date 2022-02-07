@@ -14,7 +14,7 @@ export const createCompanyDto  =
     profiles: ProfileUpdateDto[]): CompanyDto => {
         const createdProfiles: ProfileUpdateDto[] = 
               profiles.map((profile) => createProfileUpdateDto(profile.id, profile.name, 
-              profile.profilePhoto, profile.status , profile.UserId, profile.CompanyId )) 
+              profile.profilePhoto, profile.status , profile.userId, profile.CompanyId )) 
         return { 
             id : id,
             name: name,

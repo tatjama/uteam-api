@@ -14,7 +14,7 @@ create table profiles(
     name VARCHAR(128) not null,
     profilePhoto VARCHAR(255) not null,
     status enum not null,
-    UserId int not null unique foreign key(userId) references users,
+    userId int not null unique foreign key(userId) references users,
 );
 
 create table companies (

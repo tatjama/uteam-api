@@ -1,14 +1,12 @@
 import { ProfileDto, createProfileDto } from '../dto/profile.dto';
-import { ProfileUpdateDto} from '../dto/profile.update.dto';
+import { ProfileUpdateDto, ProfileCreateDto} from '../dto/profile.update.dto';
 import { ProfileModel, Profile} from '../models/Profile';
 import { User } from '../models/User';
 import { Company } from '../models/Company';
 
 class ProfilesDao{
-    createProfile = async (profileUpdateDto: ProfileUpdateDto): Promise<number> => {
-        const profile: ProfileModel = await Profile.create(profileUpdateDto
-            //, {include: [ {model: User }, {model: Company}]}
-            );
+    createProfile = async (profileCreateDto: ProfileCreateDto): Promise<number> => {
+        const profile: ProfileModel = await Profile.create(profileCreateDto);
         return profile.id;
     }
 
@@ -36,7 +34,7 @@ class ProfilesDao{
 
     
     isProfileExistByUserId = async (userId:string): Promise<boolean> => {
-        const profile: ProfileModel | null = await Profile.findOne({ where: {UserId: userId}});
+        const profile: ProfileModel | null = await Profile.findOne({ where: {userId: userId}});
         return profile? true : false;
     }
 
