@@ -1,8 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
-import CompanyService from '../services/company.service';
-import { CompanyDto } from '../dto/company.dto';
-import MyError from '../models/messages/MyError';
 import validator from 'validator';
+import { CompanyDto } from '../dto/company.dto';
+import CompanyService from '../services/company.service';
+import MyError from '../models/messages/MyError';
 
 class CompaniesMiddleware {
     extractCompanyId = (req: Request, res: Response, next: NextFunction) => {
@@ -28,42 +28,43 @@ class CompaniesMiddleware {
 
         if(req.body.name){
             req.body.name = validator.trim(req.body.name);
-            const isCompanyExist: boolean = await CompanyService.isCompanyExistByName(req.body.name);
-            isCompanyExist && errors.arrayError.push({
+
+            if(!validator.isAlphanumeric(req.body.name, 'en-US', {ignore: "%#*- '"})){
+                errors.arrayError.push({
+                    message: 'Name only excepts letters, numbers and "%#*- \'" characters',
+                    field: 'Company name'
+                });
+            }else{
+                const isCompanyExist: boolean = await CompanyService.isCompanyExistByName(req.body.name);
+                isCompanyExist && errors.arrayError.push({
                 message: 'Company with that name already exists ',
-                field: 'name'
+                field: 'Company name'
             });
+            }
+            
         } else {
             req.body.name = '';
             errors.arrayError.push({
                 message: 'Missing required field',
-                field: 'name'
+                field: 'Company name'
             });
         } 
 
         if(req.body.logo){
-            req.body.logo = validator.trim(req.body.logo)
+            req.body.logo = validator.trim(req.body.logo);
+            if(!validator.isURL(req.body.logo)){
+                errors.arrayError.push({
+                    message: 'logo must be url',
+                    field: 'Company logo'
+                })
+            }
         } else {
             req.body.logo = '';
             errors.arrayError.push({
                 message: 'Missing required field',
-                field: 'logo'
+                field: 'Company logo'
             });
         } 
-
-        if(!validator.isAlphanumeric(req.body.name, 'en-US', {ignore: '&! #*-_+,.'})){
-            errors.arrayError.push({
-                message: 'Name only excepts letters, numbers and "&! #*-_+,." characters',
-                field: 'name'
-            });
-        }
-
-        if(!validator.isURL(req.body.logo)){
-            errors.arrayError.push({
-                message: 'logo must be url',
-                field: 'logo'
-            })
-        }
 
         errors.arrayError.length > 0? res.status(400).send(errors): next();
     }
@@ -87,35 +88,42 @@ class CompaniesMiddleware {
         const errors: MyError = new MyError( 'error create company', 'validation', 400, [] );
 
         if(req.body.profile.company.name){
-            req.body.profile.company.name = validator.trim(req.body.profile.company.name);
-            const isCompanyExist: boolean = await CompanyService.isCompanyExistByName(req.body.profile.company.name);
-            isCompanyExist && errors.arrayError.push({
-                message: 'Company with that name already exists ',
-                field: 'name'
-            });
+            req.body.profile.company.name = validator.trim(req.body.profile.company.name);          
 
             if(!validator.isAlphanumeric(req.body.profile.company.name, 'en-US', {ignore: "%#*- '"})){
                 errors.arrayError.push({
                     message: 'Name only excepts letters, numbers and "%#*- \'" characters',
-                    field: 'name'
+                    field: 'Company name'
                 });
+            }else{
+               const isCompanyExist: boolean = await CompanyService.isCompanyExistByName(req.body.profile.company.name);
+            isCompanyExist && errors.arrayError.push({
+                message: 'Company with that name already exists ',
+                field: 'Company name'
+            });
             }
+            if(req.body.profile.company.logo){
+                req.body.profile.company.logo = validator.trim(req.body.profile.company.logo);
+                if(!validator.isURL(req.body.profile.company.logo)){
+                    errors.arrayError.push({
+                        message: 'logo must be url',
+                        field: 'Company logo'
+                    })
+                }
+            } 
 
             } else {
-                req.body.profile.company.name = req.body.username+"'s Company";            
+                req.body.profile.company.name = req.body.username+"'s Company";   
+                if(req.body.profile.company.logo){
+                    req.body.profile.company.logo = validator.trim(req.body.profile.company.logo);
+                    if(!validator.isURL(req.body.profile.company.logo)){
+                        errors.arrayError.push({
+                            message: 'logo must be url',
+                            field: 'Company logo'
+                        })
+                    }
+                }          
             }
-        
-        
-
-        if(req.body.profile.company.logo){
-            req.body.profile.company.logo = validator.trim(req.body.profile.company.logo);
-            if(!validator.isURL(req.body.profile.company.logo)){
-                errors.arrayError.push({
-                    message: 'logo must be url',
-                    field: 'logo'
-                })
-            }
-        }        
 
         errors.arrayError.length > 0? res.status(400).send(errors): next();
     }

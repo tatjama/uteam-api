@@ -1,5 +1,5 @@
 
-import { Op, where} from 'sequelize';
+import { Op } from 'sequelize';
 import { User, UserModel } from "../models/User";
 import { RegisterUserDto } from '../dto/register.user.dto';
 import { UserDto, createUserDto } from '../dto/user.dto';

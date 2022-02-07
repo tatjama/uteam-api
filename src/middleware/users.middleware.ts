@@ -1,8 +1,8 @@
 import { Request, Response, NextFunction } from "express";
-import  UserService  from '../services/user.service';
+import validator from 'validator';
 import { UserDto } from '../dto/user.dto';
 import { ReqUser } from '../dto/register.user.dto';
-import validator from 'validator';
+import  UserService  from '../services/user.service';
 import MyError from "../models/messages/MyError";
 class UsersMiddleware{  
     extractUserIdFromJWT = async (req: ReqUser, res: Response, next: NextFunction): Promise<void> => {

@@ -1,12 +1,11 @@
 import { Request, Response, NextFunction} from 'express';
-import UserService from '../services/user.service';
-import { ProfileDto } from '../dto/profile.dto';
-import ProfileService from '../services/profile.service';
-import MyError from '../models/messages/MyError';
 import validator from 'validator';
-import CompanyService from '../services/company.service';
-import { CompanyDto } from '../dto/company.dto';
 import { ReqUser } from '../dto/register.user.dto';
+import { ProfileDto } from '../dto/profile.dto';
+import { CompanyDto } from '../dto/company.dto';
+import ProfileService from '../services/profile.service';
+import CompanyService from '../services/company.service';
+import MyError from '../models/messages/MyError';
 class ProfilesMiddleware{
     extractProfileId = (req: Request, res: Response, next: NextFunction) => {
         req.body.id = req.params.id;
@@ -37,15 +36,7 @@ class ProfilesMiddleware{
     validateProfileFields = async (req: ReqUser, res: Response, next: NextFunction): Promise<void> => {
         
         const errors: MyError = new MyError( 'error create profile', 'validation', 400, [] );
-        /*console.log("----------------------------------------------------");
         
-        console.log("----------------------------------------------------");
-        console.log("----------------------------------------------------");
-
-        console.log(req.rawHeaders[1].split(" ")[1]);
-        console.log(req.user?.username);
-        console.log(req.body.userId);*/
-
         if(req.body.name){
             req.body.name = validator.trim(req.body.name);
         } else {
@@ -144,11 +135,19 @@ class ProfilesMiddleware{
         const errors: MyError = new MyError( 'error create profile', 'validation', 400, [] );
         if(req.body.profile.name){
             req.body.profile.name = validator.trim(req.body.profile.name);
+            
             if(!validator.isAlphanumeric(req.body.profile.name)){
                 errors.arrayError.push({
                     message: 'Name only excepts letters and numbers',
                     field: 'name'
                 });
+            }else{
+                const isProfileExists: boolean = await ProfileService.isProfileNameExists(req.body.profile.name);
+                        isProfileExists && errors.arrayError.push({
+                    message: 'Profile with that name already exists ',
+                    field: 'Profile name'
+                });
+
             }
 
             if(req.body.profile.profilePhoto){

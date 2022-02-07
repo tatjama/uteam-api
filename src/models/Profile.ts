@@ -23,7 +23,8 @@ export const Profile = sequelize.define<ProfileModel>( 'profile', {
     },
     name: {
         type: DataTypes.STRING(128),
-        allowNull: false
+        allowNull: false,
+        unique: true,
     },
     profilePhoto: {
         type: DataTypes.STRING(255),
