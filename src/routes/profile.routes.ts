@@ -1,5 +1,6 @@
 import express from 'express';
 import controller from '../controllers/profiles.controller';
+import UsersMiddleware from '../middleware/users.middleware';
 import ProfilesMiddleware from '../middleware/profiles.middleware';
 import passport from "passport";
 
@@ -9,8 +10,12 @@ router.get('/', controller.getProfiles);
 
 router.post('/', 
     passport.authenticate('jwt', {session: false}),
-    ProfilesMiddleware.validateProfileFields,  
-    ProfilesMiddleware.isProfileNoExist, 
+    
+    ProfilesMiddleware.validateProfileFields, 
+    UsersMiddleware.extractUserIdFromJWT,
+    ProfilesMiddleware.isProfileNoExists,
+    //is profileName exists 
+    //ProfilesMiddleware.isProfileNameExists,
     controller.createProfile);
 
 router.get('/:id', 
