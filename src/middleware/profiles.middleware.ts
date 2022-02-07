@@ -13,11 +13,19 @@ class ProfilesMiddleware{
         next();
     }
 
-    isProfileNoExists = async(req: Request, res: Response, next: NextFunction): Promise<void> => {
+    isProfileNoExists = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         const isProfileExist: boolean = await ProfileService.isProfileExistByUserId(req.body.userId);
         isProfileExist? res.status(400).send( new MyError ('find profile', 'validation', 400,[{
                                             message: 'profile for that user already exists!',
                                             field: 'UserId '
+                                        }])): next();
+    }
+
+    isProfileNameExists = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+        const isProfileNameExists: boolean = await ProfileService.isProfileNameExists(req.body.name);
+        isProfileNameExists? res.status(400).send( new MyError ('find profile', 'validation', 400,[{
+                                                    message: 'Profile name exists.Please change profile name',
+                                                    field: 'profile name '
                                         }])): next();
     }
 

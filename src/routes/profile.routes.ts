@@ -9,13 +9,11 @@ const router: express.Router = express.Router();
 router.get('/', controller.getProfiles);
 
 router.post('/', 
-    passport.authenticate('jwt', {session: false}),
-    
+    passport.authenticate('jwt', {session: false}),    
     ProfilesMiddleware.validateProfileFields, 
     UsersMiddleware.extractUserIdFromJWT,
     ProfilesMiddleware.isProfileNoExists,
-    //is profileName exists 
-    //ProfilesMiddleware.isProfileNameExists,
+    ProfilesMiddleware.isProfileNameExists,
     controller.createProfile);
 
 router.get('/:id', 
@@ -27,7 +25,8 @@ router.put('/:id',
     passport.authenticate('jwt', {session: false}),
     ProfilesMiddleware.validateProfileEditFields,
     ProfilesMiddleware.extractProfileId,
-    ProfilesMiddleware.validateProfileExists,
+    ProfilesMiddleware.validateProfileExists,    
+    ProfilesMiddleware.isProfileNameExists,
     controller.putProfile);    
 
 router.delete('/:id',

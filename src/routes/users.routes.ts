@@ -20,6 +20,7 @@ router.post('/register',
      UsersMiddleware.validateRegisterUserFields,
      UsersMiddleware.validateUserNoExist, 
      ProfilesMiddleware.validateProfileFieldsExist,
+     ProfilesMiddleware.isProfileNameExists,
      CompaniesMiddleware.validateCompanyFieldsExists,
      controller.register);
 

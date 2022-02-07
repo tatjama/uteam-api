@@ -6,6 +6,7 @@ export interface IProfileService{
     getProfileById:(id: string) => Promise<ProfileDto | null>;
     //getProfileByUserId: ( userId: string) => Promise<ProfileDto | null>;
     isProfileExistByUserId: (userId: string) => Promise<boolean>;
+    isProfileNameExists:(name: string) => Promise<boolean> ;
     putProfile: (profileUpdateDto: ProfileUpdateDto) => Promise<ProfileDto | null>;
     deleteById: ( id: string ) => Promise<void>;
 }

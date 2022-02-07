@@ -38,6 +38,11 @@ class ProfilesDao{
         return profile? true : false;
     }
 
+    isProfileNameExists = async (name: string): Promise<boolean> => {
+        const profile: ProfileModel | null = await Profile.findOne({ where: {name: name} });
+        return profile? true: false;
+    }
+
     updateProfileById = async (profileUpdateDto: ProfileUpdateDto): Promise<ProfileDto | null> => {
          await Profile.update({ name: profileUpdateDto.name, profilePhoto: profileUpdateDto.profilePhoto
             , CompanyId: profileUpdateDto.CompanyId}, {
