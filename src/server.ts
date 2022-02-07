@@ -13,7 +13,7 @@ import association from './models/associations';
 const app: Express = express();
 
 /**Passport */
-import './middleware/passport.middleware';
+import './auth/passport';
 
 app.use(passport.initialize());
 

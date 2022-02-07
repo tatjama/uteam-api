@@ -1,20 +1,19 @@
+
+import  { Op} from 'sequelize';
 import { User, UserModel } from "../models/User";
 import { RegisterUserDto } from '../dto/register.user.dto';
 import { UserDto, createUserDto } from '../dto/user.dto';
-import  { Op} from 'sequelize';
-import { myHashCompare } from '../utility/helper';
-
 import {Profile} from '../models/Profile';
 import {Company} from '../models/Company';
 import { sequelize } from '../instances/sequalize';
+import { myHashCompare } from '../utility/helper';
+
 class UsersDao{ 
      registerUser = async(registerUserDto: RegisterUserDto): Promise<number> => { 
       const name = registerUserDto.profile.company.name;
       User.addHook('afterCreate', async (user, options) => {
-        await Company.update({ name: name, companyOwner: user.getDataValue('id') }, {
-          where: {
-            name: name
-          },
+        await Company.update({ name, companyOwner: user.getDataValue('id') }, {
+          where: { name },
           transaction: options.transaction
         });
       });
@@ -36,11 +35,6 @@ class UsersDao{
     isUserExistsById = async (id: string): Promise<boolean> => {
       const result: UserModel | null= await User.findByPk(id);
       return result? true: false;
-    }
-
-    getUserByEmailOrUsername = async(email: string, username: string): Promise<UserDto | null> => {
-      const user: UserModel | null= await User.findOne({ where: {[Op.or]:[{ email: email },{ username: username }] } });
-      return user? createUserDto(user.id, user.username, user.email, user.role): null;      
     }
 
     getUserById = async(id: string): Promise<UserDto | null> => {

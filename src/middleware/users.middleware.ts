@@ -79,9 +79,9 @@ class UsersMiddleware{
         }
 
         if(req.body.username || req.body.email){
+
             if(req.body.username){
                 req.body.username = validator.trim(req.body.username);
-                req.body.email = '';
                 if(!validator.isAlphanumeric(req.body.username, 'sr-RS@latin', {ignore: '%#*-_'})){
                     errors.arrayError.push({
                         message:'User name only excepts letters, numbers or %#*-_',
@@ -94,16 +94,16 @@ class UsersMiddleware{
                         field: 'username',
                     });
                 }
-
+                req.body.usernameField = req.body.username;
             }else{
                 req.body.email = validator.trim(req.body.email);
-                req.body.username = '';
                 if(!validator.isEmail(req.body.email)){
                     errors.arrayError.push({ 
                         message: 'Invalid email format',
                         field: 'email',
                     });
                 }
+                req.body.usernameField = req.body.email;
             }  
             
         }else{
