@@ -1,9 +1,4 @@
 import { Request } from 'express';
-export interface RegisterUserDtoLite{
-    username: string,
-    email: string,
-    password: string,
-}
 
 export interface RegisterUserDto{
     username: string,

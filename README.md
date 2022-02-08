@@ -27,23 +27,35 @@
 
     ENDPOINTS:
     1. '/' -  returns JSON  with confirmation that everything is O.K. 
-    2. '/register' - new user registration (required: username, email and password), password hashed at db, return user id,
-    3. '/login' - user login (required: username and password or  email and password), check password validity,
-        create JWT , return O.K. message and JWT
+    2. '/register' - new user create (required: username, email and password), password hashed at db
+                   - new profile create (required: name, optional: profilePhoto)
+                   - new company create (optional: name, logo)    
+                    return user id, 
+    3. '/login' - user login (required: username and password or  email and password), 
+                  using local passport authentication to check password validity and create JWT 
+                  return JWT
     4. '/profiles'  
             - GET - returns list of profiles limit 20,
-            - POST - new profile creation ( required: name, profile Photo url and FK UserId)
-    5. '/profiles/: id'
+            - POST - new profile creation ( required: name, userId from JWT payload),
+                    protected route with JWT passport authentication
+                    return profile id  
+    5. '/profiles/: id' 
             - GET - returns one profile with id,
-            - PUT - update profile 
-            - DELETE - delete profile
+            - PUT - update profile, protected route with JWT passport authentication,
+                    return updated profile
+            - DELETE - delete profile, protected route with JWT passport authentication,
+                    return number of affected profile rows
     6. '/companies'
-            - POST - new company creation ( required: name, logo)
             - GET - return list of companies limit 20,
+            - POST - new company creation ( required: name, userId as companyOwner from JWT payload)
+                     protected route with JWT passport authentication
+                     return company id             
     7. '/companies/: id'
             - GET - return one company with id,
-            - PUT - update company,
-            - DELETE - delete company
+            - PUT - update company, protected route with JWT passport authentication,
+                    return updated company
+            - DELETE - delete company, protected route with JWT passport authentication,
+                    return number of affected company rows
 
     It was tested with the help of a Postman.
 
@@ -57,12 +69,13 @@
         4. name - only letters and numbers
         5. profilePhoto - only url
     Company:
-        6. name - only letters and numbers
+        6. name - Only excepts letters,  numbers and #%-_*'
         7. logo - only url
 
     RELATIONS:
         user and profile = one to one,  
-        one company has many profiles
+        one company has many profiles,
+        user has many companies
 ## Build with 
     1. Node.js
     2. Express, body-parser, cors
@@ -75,6 +88,7 @@
     9. Bcryptjs
     10. Jsonwebtoken
     11. Validator
+    12. Passport, passport-local, passport-jwt
 
 ### Screenshot
 
@@ -89,9 +103,17 @@
 ![Errors company put](./public/screenshots/error-company-put.png)
 ![Profile GET](./public/screenshots/profile-get.png);
 ![Company GET](./public/screenshots/company-get.png);
+![Register with required fields](./public/screenshots/register-without-companyName.png);
+![Register with required fields - Result](./public/screenshots/register-without-companyName-result.png);
+![Register all](./public/screenshots/register-all.png);
+![Register all - Result](./public/screenshots/register-all-result.png);
+![Unauthorized](./public/screenshots/unauthorized.png);
+![Login-JWT](./public/screenshots/login-JWT.png);
+![Authorized PUT profile](./public/screenshots/authorized-put-profile.png);
 
 ## Thanks to
-![Slugify](https://gist.github.com/mathewbyrne/1280286)
+
+[Slugify](https://gist.github.com/mathewbyrne/1280286)
 
 ## Author
 - Website - [Tatjana Markovic](https://my-react-portfolio-tatjana.vercel.app/)
