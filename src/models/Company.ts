@@ -30,13 +30,13 @@ export const Company = sequelize.define<CompanyModel>( 'company', {
     logo: {
         type: DataTypes.STRING(255),
         allowNull: false,
-        defaultValue:"https://cdn.w600.comps.canstockphoto.com/business-avatar-logo-eps-vector_csp37346646.jpg"
+        defaultValue:"https://upload.wikimedia.org/wikipedia/commons/d/d1/Identicon.svg"
     },
     slug: {
         type: DataTypes.VIRTUAL,   
         unique: true,   
         get() {
-          return slugify(this.name); 
+          return this.name && slugify(this.name); 
         },
         set(value) {
           throw   new MyError( 'Error setter', 'Forbidden', 403, [{

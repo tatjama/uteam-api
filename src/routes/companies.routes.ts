@@ -22,7 +22,7 @@ router.get('/:id',
 
 router.put('/:id',
     passport.authenticate('jwt', {session: false}),    
-    CompaniesMiddleware.validateCompanyFields,
+    CompaniesMiddleware.validateEditCompanyFields,
     CompaniesMiddleware.extractCompanyId,
     CompaniesMiddleware.validateCompanyExists,
     controller.putCompany);

@@ -21,11 +21,24 @@ class ProfilesMiddleware{
     }
 
     isProfileNameExists = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-        const isProfileNameExists: boolean = await ProfileService.isProfileNameExists(req.body.name);
-        isProfileNameExists? res.status(400).send( new MyError ('find profile', 'validation', 400,[{
+        if(req.body.name){
+            const isProfileNameExists: boolean = await ProfileService.isProfileNameExists(req.body.name);
+            isProfileNameExists? res.status(400).send( new MyError ('find profile', 'validation', 400,[{
                                                     message: 'Profile name exists.Please change profile name',
                                                     field: 'profile name '
                                         }])): next();
+        }else{
+            if(req.body.profilePhoto){
+                next();
+            }else{
+                res.status(400).send( new MyError (' profile', 'validation', 400,[{
+                    message: 'Input fields are empty! You must provide at least one input field.',
+                    field: 'profile name and profile Photo '
+        }]))
+            }
+            
+        }
+        
     }
 
 
