@@ -45,7 +45,7 @@ class ProfilesDao{
 
     updateProfileById = async (profileUpdateDto: ProfileUpdateDto): Promise<ProfileDto | null> => {
          await Profile.update({ name: profileUpdateDto.name, profilePhoto: profileUpdateDto.profilePhoto
-            , CompanyId: profileUpdateDto.CompanyId}, {
+            , companyId: profileUpdateDto.companyId}, {
              where: { 
               id: profileUpdateDto.id,   
              }

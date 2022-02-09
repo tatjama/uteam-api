@@ -1,10 +1,9 @@
 import { Request, Response, NextFunction } from 'express';
-import validator from 'validator';
 import { ReqUser } from '../dto/register.user.dto';
 import { CompanyDto } from '../dto/company.dto';
 import CompanyService from '../services/company.service';
 import MyError from '../models/messages/MyError';
-
+import { companyFieldsValidation, companyEditFieldsValidation } from '../utility/helper';
 class CompaniesMiddleware {
     extractCompanyId = (req: Request, res: Response, next: NextFunction) => {
         req.body.id = req.params.id;
@@ -19,86 +18,6 @@ class CompaniesMiddleware {
                                         }])): next();
     }
 
-    
-    // CASE - NAME AND LOGO URL ARE REQUIRED
-    //If all fields are NOT required remove function and call validateCompanyEditFields
-    
-    validateCompanyFields = async (req: ReqUser, res: Response, next: NextFunction): Promise<void> => {
-        
-        const errors: MyError = new MyError( 'error create company', 'validation', 400, [] );
-
-        if(req.body.name){
-            req.body.name = validator.trim(req.body.name);
-
-            if(!validator.isAlphanumeric(req.body.name, 'en-US', {ignore: "%#*- '"})){
-                errors.arrayError.push({
-                    message: 'Name only excepts letters, numbers and "%#*- \'" characters',
-                    field: 'Company name'
-                });
-            }else{
-                const isCompanyExist: boolean = await CompanyService.isCompanyExistByName(req.body.name);
-                isCompanyExist && errors.arrayError.push({
-                message: 'Company with that name already exists ',
-                field: 'Company name'
-            });
-            }
-            
-        } else {
-            req.body.name = req.user?.username + "'s Company";            
-        } 
-
-        if(req.body.logo){
-            req.body.logo = validator.trim(req.body.logo);
-            if(!validator.isURL(req.body.logo)){
-                errors.arrayError.push({
-                    message: 'logo must be url',
-                    field: 'Company logo'
-                })
-            }
-        } 
-
-        errors.arrayError.length > 0? res.status(400).send(errors): next();
-    }
-    validateEditCompanyFields = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-        
-        const errors: MyError = new MyError( 'error create company', 'validation', 400, [] );
-
-        !req.body.name && !req.body.logo && errors.arrayError.push({
-            message: 'Input fields are empty! You must provide at least one input field',
-            field: 'Company name and logo'
-        });
-
-        if(req.body.name){
-            req.body.name = validator.trim(req.body.name);
-
-            if(!validator.isAlphanumeric(req.body.name, 'en-US', {ignore: "%#*- '"})){
-                errors.arrayError.push({
-                    message: 'Name only excepts letters, numbers and "%#*- \'" characters',
-                    field: 'Company name'
-                });
-            }else{
-                const isCompanyExist: boolean = await CompanyService.isCompanyExistByName(req.body.name);
-                isCompanyExist && errors.arrayError.push({
-                message: 'Company with that name already exists ',
-                field: 'Company name'
-            });
-            }
-            
-        } 
-
-        if(req.body.logo){
-            req.body.logo = validator.trim(req.body.logo);
-            if(!validator.isURL(req.body.logo)){
-                errors.arrayError.push({
-                    message: 'logo must be url',
-                    field: 'Company logo'
-                })
-            }
-        } 
-
-        errors.arrayError.length > 0? res.status(400).send(errors): next();
-    }
-
     validateCompanyExists = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         const company: CompanyDto | null= await CompanyService.getCompanyById(req.body.id);
         if(company){
@@ -109,50 +28,54 @@ class CompaniesMiddleware {
                 message: 'company with that ID does not exist!',
                 field: 'company id '
             }]))
-        }
+        }    
+    }
+
+    validateCompanyFields = async (req: ReqUser, res: Response, next: NextFunction): Promise<void> => {
+        const errors: MyError = companyFieldsValidation(req);
+
+        if (req.body.name){
+            const isCompanyExist: boolean = await CompanyService.isCompanyExistByName(req.body.name);
+            isCompanyExist && errors.arrayError.push({
+            message: 'Company with that name already exists ',
+            field: 'Company name'
+            });
+        }else {
+            req.body.name = req.user?.username + "'s Company";            
+        } 
+
+        errors.arrayError.length > 0? res.status(400).send(errors): next();
+    }
     
+    validateEditCompanyFields = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+        const errors: MyError = companyFieldsValidation(req);
+
+        !req.body.name && !req.body.logo && errors.arrayError.push({
+            message: 'Input fields are empty! You must provide at least one input field',
+            field: 'Company name and logo'
+        });
+
+        if(req.body.name){
+                const isCompanyExist: boolean = await CompanyService.isCompanyExistByName(req.body.name);
+                isCompanyExist && errors.arrayError.push({
+                message: 'Company with that name already exists ',
+                field: 'Company name'
+            });
+        } 
+
+        errors.arrayError.length > 0? res.status(400).send(errors): next();
     }
 
     validateCompanyFieldsExists = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-        
-        const errors: MyError = new MyError( 'error create company', 'validation', 400, [] );
-
+        const errors: MyError = companyEditFieldsValidation(req);
         if(req.body.profile.company.name){
-            req.body.profile.company.name = validator.trim(req.body.profile.company.name);          
-
-            if(!validator.isAlphanumeric(req.body.profile.company.name, 'en-US', {ignore: "%#*- '"})){
-                errors.arrayError.push({
-                    message: 'Name only excepts letters, numbers and "%#*- \'" characters',
-                    field: 'Company name'
-                });
-            }else{
-               const isCompanyExist: boolean = await CompanyService.isCompanyExistByName(req.body.profile.company.name);
+            const isCompanyExist: boolean = await CompanyService.isCompanyExistByName(req.body.profile.company.name);
             isCompanyExist && errors.arrayError.push({
                 message: 'Company with that name already exists ',
                 field: 'Company name'
             });
-            }
-            if(req.body.profile.company.logo){
-                req.body.profile.company.logo = validator.trim(req.body.profile.company.logo);
-                if(!validator.isURL(req.body.profile.company.logo)){
-                    errors.arrayError.push({
-                        message: 'logo must be url',
-                        field: 'Company logo'
-                    })
-                }
-            } 
-
-            } else {
-                req.body.profile.company.name = req.body.username+"'s Company";   
-                if(req.body.profile.company.logo){
-                    req.body.profile.company.logo = validator.trim(req.body.profile.company.logo);
-                    if(!validator.isURL(req.body.profile.company.logo)){
-                        errors.arrayError.push({
-                            message: 'logo must be url',
-                            field: 'Company logo'
-                        })
-                    }
-                }          
+            }else{
+                req.body.profile.company.name = req.body.username+"'s Company";  
             }
 
         errors.arrayError.length > 0? res.status(400).send(errors): next();
