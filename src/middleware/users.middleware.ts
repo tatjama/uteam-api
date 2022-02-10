@@ -3,7 +3,7 @@ import { UserDto } from '../dto/user.dto';
 import { ReqUser } from '../dto/register.user.dto';
 import  UserService  from '../services/user.service';
 import MyError from "../models/messages/MyError";
-import { registerUserFieldsValidation, loginUserFieldsValidation } from '../utility/helper';
+import { userFieldsValidation, loginUserFieldsExistsValidation } from '../utility/helper';
 class UsersMiddleware{  
     extractUserIdFromJWT = async (req: ReqUser, res: Response, next: NextFunction): Promise<void> => {
         if(req.user?.username){
@@ -24,17 +24,9 @@ class UsersMiddleware{
                 field: 'JWT payload'
             }])))
         }         
-    }    
-
-    validateRegisterUserFieldsExist = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-        (req.body && req.body.username && req.body.email && req.body.password)? next()
-        : res.status(400).send((new MyError( 'register user fields exists', 'validation', 400,[{
-            message: 'Missing username, email or password',
-            field: 'username, email or password'
-        }])));
     }
     
-     validateUserNoExist = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    validateUserNoExist = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         const user: UserDto | null = await UserService.findByEmailOrUsername(req.body.email, req.body.username );
         user? res.status(400).send( (new MyError( 'find user', 'validation', 400,[{
                                             message: 'User with that username or email already exists!',
@@ -44,12 +36,33 @@ class UsersMiddleware{
 
      
     validateRegisterUserFields = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-        const errors: MyError  = registerUserFieldsValidation(req);
+        const errors: MyError  = userFieldsValidation(req);
         errors.arrayError.length > 0? res.status(400).send(errors): next();                
     }
 
+
+    validateRegisterUserFieldsExist = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+        (req.body && req.body.username && req.body.email && req.body.password)? next()
+        : res.status(400).send((new MyError( 'register user fields exists', 'validation', 400,[{
+            message: 'Missing username, email or password',
+            field: 'username, email or password'
+        }])));
+    }
+
+    validateLoginUserFieldsExists = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+        const errors: MyError  = loginUserFieldsExistsValidation(req);
+        errors.arrayError.length > 0? res.status(400).send(errors): next();                
+    
+    }
+    
+     
     validateLoginUserFields = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-        const errors: MyError = loginUserFieldsValidation(req);           
+        const errors: MyError = userFieldsValidation(req);  
+        if(req.body.username){
+            req.body.usernameField = req.body.username;
+        }else{
+            req.body.usernameField = req.body.email;        
+        }
         errors.arrayError.length > 0? res.status(400).send(errors): next();
     }
     

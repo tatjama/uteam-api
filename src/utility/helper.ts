@@ -22,8 +22,8 @@ export const myHashCompare = ( userPassword: string, hashedPassword: string): bo
     return bcryptjs.compareSync( userPassword, hashedPassword)? true: false;
 }
 
-// USER validation
-export const registerUserFieldsValidation = (req: Request): MyError => {    
+//Start USER validation
+export const userFieldsValidation = (req: Request): MyError => {    
     const errors: MyError = new MyError('registration error', 'validation' ,400, []);
 
     if(req.body.username){
@@ -65,31 +65,33 @@ export const registerUserFieldsValidation = (req: Request): MyError => {
     return errors;
 }
 
-export const loginUserFieldsValidation = (req: Request): MyError => {
-    const errors: MyError = registerUserFieldsValidation(req);
+export const loginUserFieldsExistsValidation = (req: Request): MyError => {
+    const errors: MyError = new MyError('registration error', 'validation' ,400, []);   
         if(!req.body.password){
             errors.arrayError.push({
                 message:'Must include a password',
                 field: 'password',
             })
-        }
-
-        if(!req.body.username || !req.body.email){
+        }        
+        
+        if(!req.body.username && !req.body.email){
             errors.arrayError.push({
                 message: 'Must include username or email',
                 field: 'username or email'           
             })
         }
-
+                    
+        
         return errors;
 }
+//End USER validations
 
-//PROFILE validation
-export const profileEditFieldsValidation = (req:Request): MyError => {    
+//Start PROFILE validations
+export const profileFieldsValidation = (name: string, profilePhoto: string) => {    
     const errors: MyError = new MyError( 'error create profile', 'validation', 400, [] );
-    if(req.body.name){
-        req.body.name = validator.trim(req.body.name);
-        if(!validator.isAlphanumeric(req.body.name)){
+    if(name){
+        name = validator.trim(name);
+        if(!validator.isAlphanumeric(name)){
             errors.arrayError.push({
                 message: 'Name only excepts letters and numbers',
                 field: 'Profile name'
@@ -97,9 +99,9 @@ export const profileEditFieldsValidation = (req:Request): MyError => {
         }
     } 
 
-    if(req.body.profilePhoto){
-        req.body.profilePhoto = validator.trim(req.body.profilePhoto);
-        if(!validator.isURL(req.body.profilePhoto)){
+    if(profilePhoto){
+        profilePhoto = validator.trim(profilePhoto);
+        if(!validator.isURL(profilePhoto)){
             errors.arrayError.push({
                 message: 'Profile Photo must be url',
                 field: 'profilePhoto'
@@ -117,68 +119,27 @@ export const profileEditFieldsValidation = (req:Request): MyError => {
         }
     }*/
 
-   return errors;
+   return {errors, name, profilePhoto};
 }
 
-export const profileFieldsValidation = (req: Request): MyError => {
-    const errors: MyError = profileEditFieldsValidation(req);
-        if(!req.body.name) {
-            errors.arrayError.push({
-                message: 'Missing required field',
-                field: 'Profile name'
-            });
-        } 
-    
-        return errors;
-}
-export const profileFieldsExistsValidation = (req: Request): MyError => {
-    const errors: MyError = new MyError( 'error create profile', 'validation', 400, [] );
-    if(req.body.profile.name){
-        req.body.profile.name = validator.trim(req.body.profile.name);
-        if(!validator.isAlphanumeric(req.body.profile.name)){
-            errors.arrayError.push({
-                message: 'Name only excepts letters and numbers',
-                field: 'Profile name'
-            });
-        }
-    } 
+//End PROFILE validations
 
-    if(req.body.profile.profilePhoto){
-        req.body.profile.profilePhoto = validator.trim(req.body.profile.profilePhoto);
-        if(!validator.isURL(req.body.profile.profilePhoto)){
-            errors.arrayError.push({
-                message: 'Profile Photo must be url',
-                field: 'profilePhoto'
-            })
-        }    
-    }
-    //const errors: MyError = profileEditFieldsValidation(req);
-        if(!req.body.profile.name) {
-            errors.arrayError.push({
-                message: 'Missing required field',
-                field: 'Profile name'
-            });
-        } 
-    
-        return errors;
-}
-
-//COMPANY validation
-export const companyFieldsValidation = (req: Request): MyError => {
+//Start COMPANY validations
+export const companyFieldsValidation = (name: string, logo: string) => {
     const errors: MyError = new MyError( 'error create company', 'validation', 400, [] );
-    if(req.body.name){
-        req.body.name = validator.trim(req.body.name);
-        if(!validator.isAlphanumeric(req.body.name, 'en-US', {ignore: "%#*- '"})){
+    if(name){
+        name = validator.trim(name);
+        if(!validator.isAlphanumeric(name, 'en-US', {ignore: "%#*- '"})){
             errors.arrayError.push({
                 message: 'Name only excepts letters, numbers and "%#*- \'" characters',
                 field: 'Company name'
             });
         }
     } 
-
-    if(req.body.logo){
-        req.body.logo = validator.trim(req.body.logo);
-        if(!validator.isURL(req.body.logo)){
+    
+    if(logo){
+        logo = validator.trim(logo);
+        if(!validator.isURL(logo)){
             errors.arrayError.push({
                 message: 'logo must be url',
                 field: 'Company logo'
@@ -186,31 +147,7 @@ export const companyFieldsValidation = (req: Request): MyError => {
         }
     }
     
-    return errors;
+    return {errors, name, logo};
 }
 
-export const companyEditFieldsValidation = (req: Request): MyError => {
-    const errors: MyError = new MyError( 'error create company', 'validation', 400, [] );
-    if(req.body.profile.company.name){
-        req.body.profile.company.name = validator.trim(req.body.profile.company.name);
-
-        if(!validator.isAlphanumeric(req.body.profile.company.name, 'en-US', {ignore: "%#*- '"})){
-            errors.arrayError.push({
-                message: 'Name only excepts letters, numbers and "%#*- \'" characters',
-                field: 'Company name'
-            });
-        }        
-    } 
-
-    if(req.body.profile.company.logo){
-        req.body.profile.company.logo = validator.trim(req.body.profile.company.logo);
-        if(!validator.isURL(req.body.profile.company.logo)){
-            errors.arrayError.push({
-                message: 'logo must be url',
-                field: 'Company logo'
-            })
-        }
-    }
-    
-    return errors;
-}
+//End Company validations

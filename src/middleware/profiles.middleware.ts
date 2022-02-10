@@ -3,7 +3,7 @@ import { ReqUser } from '../dto/register.user.dto';
 import { ProfileDto } from '../dto/profile.dto';
 import ProfileService from '../services/profile.service';
 import MyError from '../models/messages/MyError';
-import { profileFieldsValidation, profileEditFieldsValidation, profileFieldsExistsValidation } from '../utility/helper';
+import { profileFieldsValidation } from '../utility/helper';
 class ProfilesMiddleware{
     extractProfileId = (req: Request, res: Response, next: NextFunction) => {
         req.body.id = req.params.id;
@@ -51,25 +51,37 @@ class ProfilesMiddleware{
     }
 
     validateProfileFields = async (req: ReqUser, res: Response, next: NextFunction): Promise<void> => {
-        const errors: MyError = profileFieldsValidation(req);        
+        const {errors, name, profilePhoto} = profileFieldsValidation(req.body.name, req.body.profilePhoto); 
+        req.body.name = name;
+        req.body.profilePhoto = profilePhoto;       
         errors.arrayError.length > 0? res.status(400).send(errors): next();
     }
 
     validateProfileEditFields = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-        const errors: MyError =  profileEditFieldsValidation(req);
+        const {errors, name, profilePhoto}  =  profileFieldsValidation(req.body.name, req.body.profilePhoto);
+        req.body.name = name;
+        req.body.profilePhoto = profilePhoto;       
         errors.arrayError.length > 0? res.status(400).send(errors): next();
     }    
     
     // Validate profile fields when register
     validateProfileFieldsExist =  async (req: Request, res: Response, next: NextFunction) => {
-        const errors: MyError = profileFieldsExistsValidation(req);
+        const {errors, name, profilePhoto} = profileFieldsValidation(req.body.profile.name, req.body.profile.profilePhoto);
+        req.body.profile.name = name;
+        req.body.profile.profilePhoto = profilePhoto;         
         if(req.body.profile.name){            
                 const isProfileExists: boolean = await ProfileService.isProfileNameExists(req.body.profile.name);
                         isProfileExists && errors.arrayError.push({
                     message: 'Profile with that name already exists ',
                     field: 'Profile name'
                 });
-            }           
+            } else{
+                errors.arrayError.push({
+                message: 'Missing required field',
+                field: 'Profile name'
+                });                 
+            }      
+               
         errors.arrayError.length > 0? res.status(400).send(errors): next();
     }
 

@@ -11,6 +11,7 @@ router.get('/', controller.getCompanies);
 router.post('/', 
     passport.authenticate('jwt', {session: false}),
     CompaniesMiddleware.validateCompanyFields, 
+    CompaniesMiddleware.provideCompanyName,
     CompaniesMiddleware.isCompanyNoExist,
     UsersMiddleware.extractUserIdFromJWT,
     controller.createCompany);
@@ -22,7 +23,8 @@ router.get('/:id',
 
 router.put('/:id',
     passport.authenticate('jwt', {session: false}),    
-    CompaniesMiddleware.validateEditCompanyFields,
+    CompaniesMiddleware.validateCompanyFields,
+    CompaniesMiddleware.validateCompanyUpdateFieldsExists,
     CompaniesMiddleware.extractCompanyId,
     CompaniesMiddleware.validateCompanyExists,
     controller.putCompany);

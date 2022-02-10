@@ -11,6 +11,7 @@ const router: express.Router = express.Router();
 router.get('/', controller.getMessage);
 
 router.post('/login', 
+     UsersMiddleware.validateLoginUserFieldsExists,
      UsersMiddleware.validateLoginUserFields,
      passport.authenticate('local', {session: false}), 
      passportController.localPassport);

@@ -3,7 +3,7 @@ import { ReqUser } from '../dto/register.user.dto';
 import { CompanyDto } from '../dto/company.dto';
 import CompanyService from '../services/company.service';
 import MyError from '../models/messages/MyError';
-import { companyFieldsValidation, companyEditFieldsValidation } from '../utility/helper';
+import { companyFieldsValidation } from '../utility/helper';
 class CompaniesMiddleware {
     extractCompanyId = (req: Request, res: Response, next: NextFunction) => {
         req.body.id = req.params.id;
@@ -31,50 +31,48 @@ class CompaniesMiddleware {
         }    
     }
 
-    validateCompanyFields = async (req: ReqUser, res: Response, next: NextFunction): Promise<void> => {
-        const errors: MyError = companyFieldsValidation(req);
+    provideCompanyName = async (req: ReqUser, res: Response, next: NextFunction): Promise<void>=> {
+        !req.body.name && (req.body.name = req.user?.username + "'s Company");
+        next();
+    }
 
+    validateCompanyUpdateFieldsExists = async (req: Request, res: Response, next: NextFunction): Promise<void>=> {
+        !req.body.name && !req.body.logo? 
+            res.status(400).send( new MyError ('create company', 'validation', 400,[{
+                message: 'Input fields are empty! You must provide at least one input field',
+                field: 'Company name and logo'
+            }]))  : next();
+    }
+
+    validateCompanyFields = async (req: ReqUser, res: Response, next: NextFunction): Promise<void> => {
+        const {errors, name, logo} = companyFieldsValidation(req.body.name,req.body.logo);
+        req.body.name = name;
+        req.body.logo = logo;
+        
         if (req.body.name){
             const isCompanyExist: boolean = await CompanyService.isCompanyExistByName(req.body.name);
             isCompanyExist && errors.arrayError.push({
             message: 'Company with that name already exists ',
             field: 'Company name'
             });
-        }else {
-            req.body.name = req.user?.username + "'s Company";            
-        } 
+        }
 
         errors.arrayError.length > 0? res.status(400).send(errors): next();
     }
     
-    validateEditCompanyFields = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-        const errors: MyError = companyFieldsValidation(req);
-
-        !req.body.name && !req.body.logo && errors.arrayError.push({
-            message: 'Input fields are empty! You must provide at least one input field',
-            field: 'Company name and logo'
-        });
-
-        if(req.body.name){
-                const isCompanyExist: boolean = await CompanyService.isCompanyExistByName(req.body.name);
-                isCompanyExist && errors.arrayError.push({
-                message: 'Company with that name already exists ',
-                field: 'Company name'
-            });
-        } 
-
-        errors.arrayError.length > 0? res.status(400).send(errors): next();
-    }
-
     validateCompanyFieldsExists = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-        const errors: MyError = companyEditFieldsValidation(req);
+        const {errors, name, logo} = companyFieldsValidation(req.body.profile.company.name, req.body.profile.company.logo);
+        req.body.profile.company.name = name; 
+        req.body.profile.company.logo = logo;
+
         if(req.body.profile.company.name){
             const isCompanyExist: boolean = await CompanyService.isCompanyExistByName(req.body.profile.company.name);
             isCompanyExist && errors.arrayError.push({
                 message: 'Company with that name already exists ',
                 field: 'Company name'
             });
-            }else{
+            }
+        if(!req.body.profile.company.name){
                 req.body.profile.company.name = req.body.username+"'s Company";  
             }
 
