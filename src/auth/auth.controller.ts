@@ -1,7 +1,7 @@
 import  { Response } from 'express';
 import { ReqUser } from '../dto/register.user.dto';
 import AuthController from './auth.jwt';
-import Message from '../models/messages/Message';
+import Message from '../utility/data';
 
 
 const localPassport = async(req: ReqUser, res: Response): Promise<Response<string| Message>> => {

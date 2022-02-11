@@ -1,7 +1,7 @@
 import { Model, DataTypes } from 'sequelize';
 import {  sequelize } from '../instances/sequalize';
 import { slugify } from '../utility/helper';
-import MyError from './messages/MyError';
+import MyError from '../errors/MyError';
 
 import { User } from './User';
 export interface CompanyModel extends Model {
@@ -39,10 +39,10 @@ export const Company = sequelize.define<CompanyModel>( 'company', {
           return this.name && slugify(this.name); 
         },
         set(value) {
-          throw   new MyError( 'Error setter', 'Forbidden', 403, [{
+          throw   MyError.forbidden( 'company setter').arrayError.push({
             message: `Do not try to set the 'slug' value = ${value} !` ,
             field: 'slug'
-        }] );
+          })
         }
       },
       companyOwner: {

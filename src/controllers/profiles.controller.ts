@@ -1,37 +1,51 @@
-import { Request, Response } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import { ProfileDto } from '../dto/profile.dto';
 import ProfileService from '../services/profile.service';
+import { internalError } from '../errors/errors/internal.errors';
 
-import { message } from '../utility/data';
-import Message from '../models/messages/Message';
-
-const createProfile = async ( req: Request, res: Response): Promise<Response<Message>> => {
-    const profileId: number = await ProfileService.createProfile(req.body);
-    return res.status(201).json({ message: ` Profile id = ${profileId}`});
+const createProfile = async ( req: Request, res: Response, next: NextFunction ): Promise<void> => {
+    try {
+        const profileId: number = await ProfileService.createProfile(req.body);
+        res.status(201).json({ message: ` Profile id = ${profileId}`});    
+    } catch (error) {
+        next(internalError());
+    }    
 }
 
-const getProfiles = async ( req: Request, res: Response): Promise<Response<ProfileDto[] >> => {
-    const result: ProfileDto[] = await ProfileService.getProfiles(0, 20);
-    return res.status(200).json(result);
+const getProfiles = async ( req: Request, res: Response, next: NextFunction ): Promise<void> => {
+    try {
+        const result: ProfileDto[] = await ProfileService.getProfiles(0, 20);
+        res.status(200).json(result);    
+    } catch (error) {
+        next(internalError());
+    }    
 }
 
-const getProfileById = async( req: Request, res: Response): Promise<Response<ProfileDto>> => {
-    return res.status(200).json(res.locals.profile);
+const getProfileById = async( req: Request, res: Response, next: NextFunction ): Promise<void> => {
+    try {
+        res.status(200).json(res.locals.profile);
+    } catch (error) {
+        next(internalError());
+    }
 }
 
-const getMessage = async (req: Request, res: Response):Promise<Response<Message>> => {
-    return res.status(200).json(message);
+const putProfile = async (req: Request, res: Response, next: NextFunction ): Promise<void> => {    
+    try {
+        const updatedProfile = await ProfileService.putProfile(req.body);
+        res.status(200).json(updatedProfile);    
+    } catch (error) {
+        next(internalError());
+    }    
 }
 
-const putProfile = async (req: Request, res: Response): Promise<Response<ProfileDto>> => {    
-    const updatedProfile = await ProfileService.putProfile(req.body);
-    return res.status(200).json(updatedProfile);
+const removeProfile = async ( req: Request, res: Response, next: NextFunction ): Promise<void> => {
+    try {
+        await ProfileService.deleteById(req.body.id);
+        res.status(204).json();    
+    } catch (error) {
+        next(internalError());        
+    }    
 }
 
-const removeProfile = async ( req: Request, res: Response): Promise<Response> => {
-    await ProfileService.deleteById(req.body.id);
-    return res.status(204).json();
-}
 
-
-export default {  createProfile, getProfiles, getProfileById, getMessage, putProfile, removeProfile }
+export default {  createProfile, getProfiles, getProfileById, putProfile, removeProfile }
