@@ -1,11 +1,11 @@
 import { ProfileDto } from '../dto/profile.dto';
-import { ProfileUpdateDto, ProfileCreateDto } from '../dto/profile.update.dto';
+import { ProfileUpdateDto } from '../dto/profile.update.dto';
 import { IProfileService } from './profile.interface';
 import ProfilesDao from '../dao/profiles.dao';
 
 class ProfileService implements IProfileService{
 
-    createProfile = async(profileCreateDto: ProfileCreateDto): Promise<number> => {
+    createProfile = async(profileCreateDto: ProfileUpdateDto): Promise<number> => {
         return ProfilesDao.createProfile(profileCreateDto);
     }
     

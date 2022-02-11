@@ -1,7 +1,7 @@
 import { ProfileDto } from '../dto/profile.dto';
-import { ProfileUpdateDto, ProfileCreateDto } from '../dto/profile.update.dto';
+import { ProfileUpdateDto} from '../dto/profile.update.dto';
 export interface IProfileService{
-    createProfile: ( profileCreateDto: ProfileCreateDto) => Promise<number>;
+    createProfile: ( profileCreateDto: ProfileUpdateDto) => Promise<number>;
     getProfiles:(page: number, limit: number) => Promise<ProfileDto[] | []>;    
     getProfileById:(id: string) => Promise<ProfileDto | null>;
     isProfileExistByUserId: (userId: string) => Promise<boolean>;

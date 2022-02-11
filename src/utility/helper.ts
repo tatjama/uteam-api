@@ -86,28 +86,29 @@ export const loginUserFieldsExistsValidation = (req: Request): MyError => {
 }
 //End USER validations
 
-//Start PROFILE validations
-export const profileFieldsValidation = (name: string, profilePhoto: string) => {    
-    const errors: MyError = new MyError( 'error create profile', 'validation', 400, [] );
+
+//Start Fields validations
+export const fieldsValidation = (name: string, url: string, error: string, nameField:string, urlField: string) => {
+    const errors: MyError = new MyError( error, 'validation', 400, [] );
     if(name){
         name = validator.trim(name);
-        if(!validator.isAlphanumeric(name)){
+        if(!validator.isAlphanumeric(name, 'en-US', {ignore: "%#*- '"})){
             errors.arrayError.push({
-                message: 'Name only excepts letters and numbers',
-                field: 'Profile name'
+                message: 'Name only excepts letters, numbers and "%#*- \'" characters',
+                field: nameField
             });
         }
     } 
-
-    if(profilePhoto){
-        profilePhoto = validator.trim(profilePhoto);
-        if(!validator.isURL(profilePhoto)){
+    
+    if(url){
+        url = validator.trim(url);
+        if(!validator.isURL(url)){
             errors.arrayError.push({
-                message: 'Profile Photo must be url',
-                field: 'profilePhoto'
+                message: 'logo must be url',
+                field: urlField
             })
-        }    
-    }         
+        }
+    }
 
     /*if(req.body.companyId){
         const company: CompanyDto | null= await CompanyService.getCompanyById(req.body.companyId);
@@ -118,36 +119,8 @@ export const profileFieldsValidation = (name: string, profilePhoto: string) => {
             })
         }
     }*/
-
-   return {errors, name, profilePhoto};
+    
+    return {errors, name, url};
 }
 
-//End PROFILE validations
-
-//Start COMPANY validations
-export const companyFieldsValidation = (name: string, logo: string) => {
-    const errors: MyError = new MyError( 'error create company', 'validation', 400, [] );
-    if(name){
-        name = validator.trim(name);
-        if(!validator.isAlphanumeric(name, 'en-US', {ignore: "%#*- '"})){
-            errors.arrayError.push({
-                message: 'Name only excepts letters, numbers and "%#*- \'" characters',
-                field: 'Company name'
-            });
-        }
-    } 
-    
-    if(logo){
-        logo = validator.trim(logo);
-        if(!validator.isURL(logo)){
-            errors.arrayError.push({
-                message: 'logo must be url',
-                field: 'Company logo'
-            })
-        }
-    }
-    
-    return {errors, name, logo};
-}
-
-//End Company validations
+//End Fields validations

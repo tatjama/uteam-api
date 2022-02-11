@@ -3,7 +3,7 @@ import { ReqUser } from '../dto/register.user.dto';
 import { ProfileDto } from '../dto/profile.dto';
 import ProfileService from '../services/profile.service';
 import MyError from '../models/messages/MyError';
-import { profileFieldsValidation } from '../utility/helper';
+import { fieldsValidation } from '../utility/helper';
 class ProfilesMiddleware{
     extractProfileId = (req: Request, res: Response, next: NextFunction) => {
         req.body.id = req.params.id;
@@ -51,24 +51,27 @@ class ProfilesMiddleware{
     }
 
     validateProfileFields = async (req: ReqUser, res: Response, next: NextFunction): Promise<void> => {
-        const {errors, name, profilePhoto} = profileFieldsValidation(req.body.name, req.body.profilePhoto); 
+        const {errors, name, url} = fieldsValidation(req.body.name, req.body.profilePhoto, 
+            'error create Profile', 'Profile name', "profilePhoto"); 
         req.body.name = name;
-        req.body.profilePhoto = profilePhoto;       
+        req.body.profilePhoto = url;       
         errors.arrayError.length > 0? res.status(400).send(errors): next();
     }
 
     validateProfileEditFields = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-        const {errors, name, profilePhoto}  =  profileFieldsValidation(req.body.name, req.body.profilePhoto);
+        const {errors, name, url}  =  fieldsValidation(req.body.name, req.body.profilePhoto,
+            'error create Profile', 'Profile name', "profilePhoto");
         req.body.name = name;
-        req.body.profilePhoto = profilePhoto;       
+        req.body.profilePhoto = url;       
         errors.arrayError.length > 0? res.status(400).send(errors): next();
     }    
     
     // Validate profile fields when register
     validateProfileFieldsExist =  async (req: Request, res: Response, next: NextFunction) => {
-        const {errors, name, profilePhoto} = profileFieldsValidation(req.body.profile.name, req.body.profile.profilePhoto);
+        const {errors, name, url} = fieldsValidation( req.body.profile.name, req.body.profile.profilePhoto, 
+            'error create Profile', 'Profile name', "profilePhoto");
         req.body.profile.name = name;
-        req.body.profile.profilePhoto = profilePhoto;         
+        req.body.profile.profilePhoto = url;         
         if(req.body.profile.name){            
                 const isProfileExists: boolean = await ProfileService.isProfileNameExists(req.body.profile.name);
                         isProfileExists && errors.arrayError.push({

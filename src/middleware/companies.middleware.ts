@@ -3,7 +3,7 @@ import { ReqUser } from '../dto/register.user.dto';
 import { CompanyDto } from '../dto/company.dto';
 import CompanyService from '../services/company.service';
 import MyError from '../models/messages/MyError';
-import { companyFieldsValidation } from '../utility/helper';
+import { fieldsValidation } from '../utility/helper';
 class CompaniesMiddleware {
     extractCompanyId = (req: Request, res: Response, next: NextFunction) => {
         req.body.id = req.params.id;
@@ -45,9 +45,10 @@ class CompaniesMiddleware {
     }
 
     validateCompanyFields = async (req: ReqUser, res: Response, next: NextFunction): Promise<void> => {
-        const {errors, name, logo} = companyFieldsValidation(req.body.name,req.body.logo);
+        const {errors, name, url} = fieldsValidation( req.body.name,req.body.logo, 'error create company', 
+        'Company name', "Company logo");
         req.body.name = name;
-        req.body.logo = logo;
+        req.body.logo = url;
         
         if (req.body.name){
             const isCompanyExist: boolean = await CompanyService.isCompanyExistByName(req.body.name);
@@ -61,9 +62,10 @@ class CompaniesMiddleware {
     }
     
     validateCompanyFieldsExists = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-        const {errors, name, logo} = companyFieldsValidation(req.body.profile.company.name, req.body.profile.company.logo);
+        const {errors, name, url} = fieldsValidation(req.body.profile.company.name, req.body.profile.company.logo, 
+            'error create company', 'Company name', "Company logo");
         req.body.profile.company.name = name; 
-        req.body.profile.company.logo = logo;
+        req.body.profile.company.logo = url;
 
         if(req.body.profile.company.name){
             const isCompanyExist: boolean = await CompanyService.isCompanyExistByName(req.body.profile.company.name);

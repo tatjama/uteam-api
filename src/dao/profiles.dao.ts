@@ -1,11 +1,11 @@
 import { ProfileDto, createProfileDto } from '../dto/profile.dto';
-import { ProfileUpdateDto, ProfileCreateDto} from '../dto/profile.update.dto';
+import { ProfileUpdateDto} from '../dto/profile.update.dto';
 import { ProfileModel, Profile} from '../models/Profile';
 import { User } from '../models/User';
 import { Company } from '../models/Company';
 
 class ProfilesDao{
-    createProfile = async (profileCreateDto: ProfileCreateDto): Promise<number> => {
+    createProfile = async (profileCreateDto: ProfileUpdateDto): Promise<number> => {
         const profile: ProfileModel = await Profile.create(profileCreateDto);
         return profile.id;
     }
