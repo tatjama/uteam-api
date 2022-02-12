@@ -2,9 +2,9 @@ import passport from 'passport';
 import PassportLocal from 'passport-local';
 import PassportJWT from 'passport-jwt';
 import { Op} from 'sequelize';
-import { User, UserModel } from '../models/User';
-import { createLoginUserDto, LoginUserDto } from '../dto/user.dto';
-import { myHashCompare } from '../utility/helper' ;
+import { User, UserModel } from '../../models/User';
+import { createLoginUserDto, LoginUserDto } from '../../dto/user.dto';
+import { myHashCompare } from '../../utility/helper' ;
 
 const LocalStrategy = PassportLocal.Strategy;
 const JWTStrategy = PassportJWT.Strategy;

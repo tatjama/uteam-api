@@ -1,4 +1,7 @@
-import MessageError from "./MessageError";
+interface MessageError {    
+    message: string,    
+    field: string,
+}
 
 class MyError extends Error {   
     

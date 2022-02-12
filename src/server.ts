@@ -14,7 +14,7 @@ import errorHandler from './errors/error.middleware';
 const app: Express = express();
 
 /**Passport */
-import './auth/passport';
+import './auth/passport/passport.strategies';
 
 app.use(passport.initialize());
 
