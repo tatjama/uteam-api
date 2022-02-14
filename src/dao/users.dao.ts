@@ -10,7 +10,7 @@ import { sequelize } from '../instances/sequalize';
 class UsersDao{ 
      registerUser = async ( registerUserDto: RegisterUserDto ): Promise<number> => { 
         const name = registerUserDto.profile.company.name;
-        User.addHook( 'afterCreate', async ( user, options ) => {
+        User.addHook( 'afterCreate', 'registerHook', async ( user, options ) => {
         await Company.update({ name, companyOwner: user.getDataValue( 'id' ) }, {
           where: { name },
           transaction: options.transaction
@@ -26,7 +26,7 @@ class UsersDao{
           transaction: t
         });        
       }); 
-      
+      User.removeHook('afterCreate', 'registerHook');
       return newUser.id;
 
     }
