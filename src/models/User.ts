@@ -1,5 +1,6 @@
 import { Model, DataTypes} from 'sequelize';
 import { sequelize } from '../instances/sequalize';
+import { myHash } from '../utility/helper';
 
 export enum RoleEnumValue{ 
     COMPANY_USER = 'company_user' ,
@@ -14,7 +15,7 @@ export interface UserModel extends Model {
     role: RoleEnumValue;
 }
 
-export const User = sequelize.define<UserModel>('User', {
+export const User = sequelize.define<UserModel>('user', {
     id: {
         type: DataTypes.INTEGER.UNSIGNED,
         autoIncrement: true,
@@ -33,15 +34,16 @@ export const User = sequelize.define<UserModel>('User', {
         unique: true,
         allowNull: false
     },
-    password : {
-        type: DataTypes.STRING(128),
-        allowNull: false
-    },
+    password: {
+        type: DataTypes.STRING,
+        set(value: string) {
+          this.setDataValue('password', myHash(value));
+        }
+      },
     role: {
         type: DataTypes.ENUM({values: Object.keys(RoleEnumValue)}),
-        allowNull: false
+        allowNull: false,
+        defaultValue: RoleEnumValue.COMPANY_USER,
     }
 }
 );
-
-User.sync();

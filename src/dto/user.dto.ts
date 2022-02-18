@@ -15,3 +15,12 @@ export const createUserDto  =  (id: number, username: string, email: string, rol
         role: role
     }
 }
+export interface LoginUserDto{
+    username: string;
+}
+
+export const createLoginUserDto  =  ( username: string): LoginUserDto => {
+    return { 
+        username: username,
+    }
+}

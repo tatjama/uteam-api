@@ -5,8 +5,8 @@ import { User } from '../models/User';
 import { Company } from '../models/Company';
 
 class ProfilesDao{
-    createProfile = async (profileDto: ProfileDto): Promise<number> => {
-        const profile: ProfileModel = await Profile.create(profileDto);
+    createProfile = async (profileCreateDto: ProfileUpdateDto): Promise<number> => {
+        const profile: ProfileModel = await Profile.create(profileCreateDto);
         return profile.id;
     }
 
@@ -21,7 +21,7 @@ class ProfilesDao{
         //profiles.map(profile => console.log(profile.toJSON()));
         return profiles.map(profile => 
             createProfileDto( profile.id, profile.name, profile.profilePhoto, profile.status, 
-                profile.getDataValue('User'), profile.getDataValue('Company')));
+                profile.getDataValue('user'), profile.getDataValue('company')));
     }
 
     getProfileById = async ( profileId: string ): Promise<ProfileDto | null> => {
@@ -29,18 +29,23 @@ class ProfilesDao{
             include:[ {model: User }, {model: Company, required: false}],
         });
         return profile? createProfileDto(profile.id, profile.name, profile.profilePhoto, profile.status, 
-            profile.getDataValue('User'), profile.getDataValue('Company')): null;
+            profile.getDataValue('user'), profile.getDataValue('company')): null;
     }   
 
     
     isProfileExistByUserId = async (userId:string): Promise<boolean> => {
-        const profile: ProfileModel | null = await Profile.findOne({ where: {UserId: userId}});
+        const profile: ProfileModel | null = await Profile.findOne({ where: {userId: userId}});
         return profile? true : false;
+    }
+
+    isProfileNameExists = async (name: string): Promise<boolean> => {
+        const profile: ProfileModel | null = await Profile.findOne({ where: {name: name} });
+        return profile? true: false;
     }
 
     updateProfileById = async (profileUpdateDto: ProfileUpdateDto): Promise<ProfileDto | null> => {
          await Profile.update({ name: profileUpdateDto.name, profilePhoto: profileUpdateDto.profilePhoto
-            , CompanyId: profileUpdateDto.CompanyId}, {
+            , companyId: profileUpdateDto.companyId}, {
              where: { 
               id: profileUpdateDto.id,   
              }
@@ -49,7 +54,7 @@ class ProfilesDao{
               include:[ {model: User }, {model: Company, required: false}],
         });
         return updatedProfile? createProfileDto(updatedProfile.id, updatedProfile.name, updatedProfile.profilePhoto, 
-                updatedProfile.status, updatedProfile.getDataValue('User'), updatedProfile.getDataValue('Company')) 
+                updatedProfile.status, updatedProfile.getDataValue('user'), updatedProfile.getDataValue('company')) 
                 : null;     
     }
 

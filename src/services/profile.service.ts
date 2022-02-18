@@ -5,8 +5,8 @@ import ProfilesDao from '../dao/profiles.dao';
 
 class ProfileService implements IProfileService{
 
-    createProfile = async(profileDto: ProfileDto): Promise<number> => {
-        return ProfilesDao.createProfile(profileDto);
+    createProfile = async(profileCreateDto: ProfileUpdateDto): Promise<number> => {
+        return ProfilesDao.createProfile(profileCreateDto);
     }
     
     getProfiles = async (page: number, limit: number): Promise<ProfileDto[] | []> => {
@@ -19,6 +19,10 @@ class ProfileService implements IProfileService{
 
     isProfileExistByUserId = async(userId: string): Promise<boolean> => {
         return ProfilesDao.isProfileExistByUserId(userId);
+    }
+
+    isProfileNameExists = async (name: string): Promise<boolean> => {
+        return ProfilesDao.isProfileNameExists(name);
     }
 
     putProfile = async (profileDto: ProfileUpdateDto): Promise<ProfileDto | null> => {

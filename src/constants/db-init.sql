@@ -11,17 +11,18 @@ create table users(
 
 create table profiles(
     id unique int unsigned not null auto_increment primary key,
-    name VARCHAR(128) not null,
+    name unique VARCHAR(128) not null,
     profilePhoto VARCHAR(255) not null,
     status enum not null,
-    UserId int not null unique foreign key(userId) references users,
-);
+    userId unique int unsigned not null foreign key(userId) references users,
+);    
 
 create table companies (
     id unique int unsigned not null auto_increment primary key,
     name unique VARCHAR(128) not null,
     logo VARCHAR(255) not null,
-    slug unique VARCHAR(128) not null,
+    companyOwner unique int unsigned not null foreign key(companyOwner) references users,
     createdAt datetime not null,
     updatedAt datetime not null
 );
+     

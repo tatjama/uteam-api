@@ -1,4 +1,7 @@
-import Message from '../models/messages/Message';
+interface Message{
+    message: string
+}
 
 export const message:Message = { message: 'O.K.'};
 
+export default Message;

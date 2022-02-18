@@ -1,9 +1,10 @@
 import { Request, Response, NextFunction } from 'express';
-import CompanyService from '../services/company.service';
+import { ReqUser } from '../dto/register.user.dto';
 import { CompanyDto } from '../dto/company.dto';
-import MyError from '../models/messages/MyError';
-import validator from 'validator';
-
+import CompanyService from '../services/company.service';
+import { isCompanyNoExistsError, validateCompanyExistsError, validateCompanyUpdateFieldsExistsError } 
+        from '../errors/errors/company.errors';
+import { fieldsValidation } from '../utility/validations';
 class CompaniesMiddleware {
     extractCompanyId = (req: Request, res: Response, next: NextFunction) => {
         req.body.id = req.params.id;
@@ -11,61 +12,8 @@ class CompaniesMiddleware {
     }
     
     isCompanyNoExist = async(req: Request, res: Response, next: NextFunction): Promise<void> => {
-        const isCompanyExist: boolean = await CompanyService.isCompanyExistByName(req.body.name);
-        isCompanyExist? res.status(400).send( new MyError ('find company', 'validation', 400,[{
-                                            message: 'company with that name  already exists!',
-                                            field: 'name '
-                                        }])): next();
-    }
-
-    
-    // CASE - NAME AND LOGO URL ARE REQUIRED
-    //If all fields are NOT required remove function and call validateCompanyEditFields
-    
-    validateCompanyFields = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-        
-        const errors: MyError = new MyError( 'error create company', 'validation', 400, [] );
-
-        if(req.body.name){
-            req.body.name = validator.trim(req.body.name);
-            const isCompanyExist: boolean = await CompanyService.isCompanyExistByName(req.body.name);
-            isCompanyExist && errors.arrayError.push({
-                message: 'Company with that name already exists ',
-                field: 'name'
-            });
-        } else {
-            req.body.name = '';
-            errors.arrayError.push({
-                message: 'Missing required field',
-                field: 'name'
-            });
-        } 
-
-        if(req.body.logo){
-            req.body.logo = validator.trim(req.body.logo)
-        } else {
-            req.body.logo = '';
-            errors.arrayError.push({
-                message: 'Missing required field',
-                field: 'logo'
-            });
-        } 
-
-        if(!validator.isAlphanumeric(req.body.name, 'en-US', {ignore: '&! #*-_+,.'})){
-            errors.arrayError.push({
-                message: 'Name only excepts letters, numbers and "&! #*-_+,." characters',
-                field: 'name'
-            });
-        }
-
-        if(!validator.isURL(req.body.logo)){
-            errors.arrayError.push({
-                message: 'logo must be url',
-                field: 'logo'
-            })
-        }
-
-        errors.arrayError.length > 0? res.status(400).send(errors): next();
+        const isCompanyExist: boolean = await CompanyService.isCompanyExistByName(req.body.name);        
+        isCompanyExist? next(isCompanyNoExistsError()): next();
     }
 
     validateCompanyExists = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
@@ -74,13 +22,56 @@ class CompaniesMiddleware {
             res.locals.company = company;
             next();
         }else{
-            res.status(404).send(new MyError( 'Error Not found', 'validation', 404,[{
-                message: 'company with that ID does not exist!',
-                field: 'company id '
-            }]))
-        }
-    
+            next(validateCompanyExistsError());
+        }    
     }
+
+    provideCompanyName = async (req: ReqUser, res: Response, next: NextFunction): Promise<void>=> {
+        !req.body.name && (req.body.name = req.user?.username + "'s Company");
+        next();
+    }
+
+    validateCompanyUpdateFieldsExists = async (req: Request, res: Response, next: NextFunction): Promise<void>=> {
+        !req.body.name && !req.body.logo? next(validateCompanyUpdateFieldsExistsError()) : next();
+    }
+
+    validateCompanyFields = async (req: ReqUser, res: Response, next: NextFunction): Promise<void> => {
+        const {errors, name, url} = fieldsValidation( req.body.name,req.body.logo, 'error create company', 
+        'Company name', "Company logo");
+        req.body.name = name;
+        req.body.logo = url;
+        
+        if (req.body.name){
+            const isCompanyExist: boolean = await CompanyService.isCompanyExistByName(req.body.name);
+            isCompanyExist && errors.arrayError.push({
+            message: 'Company with that name already exists ',
+            field: 'Company name'
+            });
+        }
+
+        errors.arrayError.length > 0? next(errors): next();
+    }
+    
+    validateCompanyFieldsExists = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+        const {errors, name, url} = fieldsValidation(req.body.profile.company.name, req.body.profile.company.logo, 
+            'error create company', 'Company name', "Company logo");
+        req.body.profile.company.name = name; 
+        req.body.profile.company.logo = url;
+
+        if(req.body.profile.company.name){
+            const isCompanyExist: boolean = await CompanyService.isCompanyExistByName(req.body.profile.company.name);
+            isCompanyExist && errors.arrayError.push({
+                message: 'Company with that name already exists ',
+                field: 'Company name'
+            });
+            }
+        if(!req.body.profile.company.name){
+                req.body.profile.company.name = req.body.username+"'s Company";  
+            }
+
+        errors.arrayError.length > 0? next(errors): next();
+    }
+
 } 
 
 export default new CompaniesMiddleware();

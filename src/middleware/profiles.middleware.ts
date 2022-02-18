@@ -1,125 +1,29 @@
 import { Request, Response, NextFunction} from 'express';
-import UserService from '../services/user.service';
+import { ReqUser } from '../dto/register.user.dto';
 import { ProfileDto } from '../dto/profile.dto';
 import ProfileService from '../services/profile.service';
-import MyError from '../models/messages/MyError';
-import validator from 'validator';
-import CompanyService from '../services/company.service';
-import { CompanyDto } from '../dto/company.dto';
+import { fieldsValidation } from '../utility/validations';
+import { isProfileNoExistsError, isProfileNameExistsError, emptyProfileInputError, validateProfileExistsError } 
+        from '../errors/errors/profile.errors';
 class ProfilesMiddleware{
     extractProfileId = (req: Request, res: Response, next: NextFunction) => {
         req.body.id = req.params.id;
         next();
     }
 
-    isProfileNoExist = async(req: Request, res: Response, next: NextFunction): Promise<void> => {
-        const isProfileExist: boolean = await ProfileService.isProfileExistByUserId(req.body.UserId);
-        isProfileExist? res.status(400).send( new MyError ('find profile', 'validation', 400,[{
-                                            message: 'profile for that user already exists!',
-                                            field: 'UserId '
-                                        }])): next();
+    isProfileNoExists = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+        const isProfileExist: boolean = await ProfileService.isProfileExistByUserId(req.body.userId);
+        isProfileExist? next(isProfileNoExistsError()): next();
     }
 
-
-    // CASE - NAME AND PHOTO URL ARE REQUIRED
-    //If all fields are NOT required remove function and call validateProfileEditFields
-    
-
-    validateProfileFields = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-        
-        const errors: MyError = new MyError( 'error create profile', 'validation', 400, [] );
-        if(req.body.UserId){
-            const user = await UserService.findById(req.body.UserId);
-            !user && errors.arrayError.push({
-                message: 'User not found',
-                field: 'UserId'
-            })
+    isProfileNameExists = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+        if(req.body.name){
+            const isProfileNameExists: boolean = await ProfileService.isProfileNameExists(req.body.name);
+            isProfileNameExists? next(isProfileNameExistsError()): next();
         }else{
-            errors.arrayError.push({
-                message: 'Missing required field',
-                field: 'UserId'
-            })
-        }
-
-        if(req.body.name){
-            req.body.name = validator.trim(req.body.name);
-        } else {
-            req.body.name = '';
-            errors.arrayError.push({
-                message: 'Missing required field',
-                field: 'name'
-            });
-        } 
-
-        if(req.body.profilePhoto){
-            req.body.profilePhoto = validator.trim(req.body.profilePhoto)
-        } else {
-            req.body.profilePhoto = '';
-            errors.arrayError.push({
-                message: 'Missing required field',
-                field: 'profile photo'
-            });
-        } 
-
-        if(!validator.isAlphanumeric(req.body.name)){
-            errors.arrayError.push({
-                message: 'Name only excepts letters and numbers',
-                field: 'name'
-            });
-        }
-
-        if(!validator.isURL(req.body.profilePhoto)){
-            errors.arrayError.push({
-                message: 'Profile Photo must be url',
-                field: 'profilePhoto'
-            })
-        }
-
-        errors.arrayError.length > 0? res.status(400).send(errors): next();
+            req.body.profilePhoto? next(): next(emptyProfileInputError());            
+        }        
     }
-
-    // CASE - NAME AND PHOTO URL ARE NOT REQUIRED
-    //If all fields are required remove function and call validateProfile Fields
-    
-    validateProfileEditFields = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-        
-        const errors: MyError = new MyError( 'error create profile', 'validation', 400, [] );
-
-        if(req.body.name){
-            req.body.name = validator.trim(req.body.name);
-            if(!validator.isAlphanumeric(req.body.name)){
-                errors.arrayError.push({
-                    message: 'Name only excepts letters and numbers',
-                    field: 'name'
-                });
-            }
-    
-        } 
-
-        if(req.body.profilePhoto){
-            req.body.profilePhoto = validator.trim(req.body.profilePhoto);
-            if(!validator.isURL(req.body.profilePhoto)){
-                errors.arrayError.push({
-                    message: 'Profile Photo must be url',
-                    field: 'profilePhoto'
-                })
-            }    
-        }         
-
-        if(req.body.CompanyId){
-            const company: CompanyDto | null= await CompanyService.getCompanyById(req.body.CompanyId);
-            if(!company){
-                errors.arrayError.push({
-                    message: 'company with that ID does not exist!',
-                    field: 'company id '
-                })
-            }
-        }
-       
-        errors.arrayError.length > 0? res.status(400).send(errors): next();
-    }
-
-    
 
     validateProfileExists = async (req: Request, res: Response, next: NextFunction) => {
         const profile: ProfileDto | null= await ProfileService.getProfileById(req.body.id);
@@ -127,13 +31,47 @@ class ProfilesMiddleware{
             res.locals.profile = profile;
             next();
         }else{
-            res.status(404).send(new MyError( 'Error Not found', 'validation', 404,[{
-                message: 'profile with that ID does not exist!',
-                field: 'profile id '
-            }]))
+            next(validateProfileExistsError());
         }
     }
 
+    validateProfileFields = async (req: ReqUser, res: Response, next: NextFunction): Promise<void> => {
+        const {errors, name, url} = fieldsValidation(req.body.name, req.body.profilePhoto, 
+            'error create Profile', 'Profile name', "profilePhoto"); 
+        req.body.name = name;
+        req.body.profilePhoto = url;       
+        errors.arrayError.length > 0? next(errors): next();
+    }
+
+    validateProfileEditFields = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+        const {errors, name, url}  =  fieldsValidation(req.body.name, req.body.profilePhoto,
+            'error create Profile', 'Profile name', "profilePhoto");
+        req.body.name = name;
+        req.body.profilePhoto = url;       
+        errors.arrayError.length > 0? next(errors): next();
+    }    
+    
+    // Validate profile fields when register
+    validateProfileFieldsExist =  async (req: Request, res: Response, next: NextFunction) => {
+        const {errors, name, url} = fieldsValidation( req.body.profile.name, req.body.profile.profilePhoto, 
+            'error create Profile', 'Profile name', "profilePhoto");
+        req.body.profile.name = name;
+        req.body.profile.profilePhoto = url;         
+        if(req.body.profile.name){            
+                const isProfileExists: boolean = await ProfileService.isProfileNameExists(req.body.profile.name);
+                        isProfileExists && errors.arrayError.push({
+                    message: 'Profile with that name already exists ',
+                    field: 'Profile name'
+                });
+            } else{
+                errors.arrayError.push({
+                message: 'Missing required field',
+                field: 'Profile name'
+                });                 
+            }      
+               
+        errors.arrayError.length > 0? next(errors): next();
+    }
 
 }
 

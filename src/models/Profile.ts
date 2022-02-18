@@ -1,7 +1,5 @@
 import { Model, DataTypes } from 'sequelize';
 import {  sequelize } from '../instances/sequalize';
-import { User } from './User';
-import { Company } from './Company';
 
 export enum StatusEnumValue{ 
     PENDING = 'pending' ,
@@ -15,7 +13,7 @@ export interface ProfileModel extends Model {
     status: StatusEnumValue;
 }
 
-export const Profile = sequelize.define<ProfileModel>( 'Profile', {
+export const Profile = sequelize.define<ProfileModel>( 'profile', {
     id:{
         type: DataTypes.INTEGER.UNSIGNED,
         autoIncrement: true,
@@ -25,20 +23,17 @@ export const Profile = sequelize.define<ProfileModel>( 'Profile', {
     },
     name: {
         type: DataTypes.STRING(128),
-        allowNull: false
+        allowNull: false,
+        unique: true,
     },
     profilePhoto: {
         type: DataTypes.STRING(255),
-        allowNull: false
+        allowNull: false,
+        defaultValue: "https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png"
     },
     status: {
         type: DataTypes.ENUM({values: Object.keys(StatusEnumValue)}),
-        allowNull: false
+        allowNull: false,
+        defaultValue: StatusEnumValue.PENDING,
     }
 })
-
-Profile.belongsTo(User);
-User.hasOne(Profile);
-Company.hasMany(Profile);
-Profile.belongsTo(Company);
-Profile.sync();
