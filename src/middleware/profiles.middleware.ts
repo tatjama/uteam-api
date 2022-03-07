@@ -6,7 +6,7 @@ import { fieldsValidation } from '../utility/validations';
 import { isProfileNoExistsError, isProfileNameExistsError, emptyProfileInputError, validateProfileExistsError } 
         from '../errors/errors/profile.errors';
 class ProfilesMiddleware{
-    extractProfileId = (req: Request, res: Response, next: NextFunction) => {
+    extractProfileId = (req: Request, res: Response, next: NextFunction): void => {
         req.body.id = req.params.id;
         next();
     }
