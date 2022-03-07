@@ -1,8 +1,9 @@
-import {User} from './User';
-import {Profile} from './Profile';
-import {Company} from './Company';
+import { User } from './User';
+import { Profile } from './Profile';
+import { Company } from './Company';
+import { sequelize} from '../instances/sequalize';
 
-const associations = () => {
+const associations = async() => {
     User.hasOne(Profile );
     User.hasMany(Company, {
         foreignKey: 'companyOwner'
@@ -14,9 +15,7 @@ const associations = () => {
     Profile.belongsTo(User);
     Profile.belongsTo(Company);
 
-    User.sync();
-    Company.sync();
-    Profile.sync();
+    await sequelize.sync(); 
 }
 
 export default associations;

@@ -1,6 +1,4 @@
-interface Message{
-    message: string
-}
+type Message = { message: string };
 
 export const message:Message = { message: 'O.K.'};
 

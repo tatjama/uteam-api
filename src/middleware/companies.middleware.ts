@@ -6,7 +6,7 @@ import { isCompanyNoExistsError, validateCompanyExistsError, validateCompanyUpda
         from '../errors/errors/company.errors';
 import { fieldsValidation } from '../utility/validations';
 class CompaniesMiddleware {
-    extractCompanyId = (req: Request, res: Response, next: NextFunction) => {
+    extractCompanyId = (req: Request, res: Response, next: NextFunction): void => {
         req.body.id = req.params.id;
         next();
     }
